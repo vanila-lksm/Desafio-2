@@ -1,0 +1,34 @@
+#ifndef RELACIONES_H
+#define RELACIONES_H
+
+class relaciones
+{
+private:
+    unsigned long long int* amistades=nullptr;
+    unsigned int cantidad_usuarios=0;
+public:
+    //constructores y destructor
+    relaciones();
+    relaciones(unsigned int c_u);
+    relaciones(const relaciones& otra);
+    ~relaciones();
+    //set()
+    void setAmistades(const unsigned long long int* nuevas, unsigned int c_u);
+    void setCantidadUsuarios(unsigned int c_u);
+    void setMarca(unsigned int i, unsigned int j, unsigned char valor);
+    //get()
+    short int getEspaciosFila()const;
+    unsigned int getCantidad_usuarios()const;
+    unsigned long long int* getAmistades()const;
+    bool getMarca(unsigned int i, unsigned int j)const;
+    //funciones
+    unsigned int amigosEnComun(unsigned int i, unsigned int j,unsigned int& iteraciones);
+    static unsigned char u_BitMasBajo(unsigned long long combinado);
+    //operadores
+    relaciones& operator=(const relaciones& otra);
+    bool operator==(const relaciones& otra);
+
+
+};
+
+#endif // RELACIONES_H
