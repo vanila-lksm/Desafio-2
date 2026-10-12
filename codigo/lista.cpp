@@ -5,9 +5,11 @@ template <typename T>
 typename Lista<T>::Nodo* Lista<T>::caminar(Nodo* actual, int pos, int indice) const {
     while (pos < indice) {
         actual = actual->sig; pos++;
+        ciclos++;
     }
     while (pos > indice) {
         actual = actual->ant; pos--;
+        ciclos++;
     }
     return actual;
 }
@@ -87,13 +89,13 @@ void Lista<T>::quitarNodo(Nodo* n) {
     cursor = 0;
 }
 template <typename T>
-Lista<T>::Lista() : cabeza(0), cola(0), tam(0), cursor(0), indiceCursor(0) {}
+Lista<T>::Lista() : cabeza(0),cola(0),tam(0),cursor(0),indiceCursor(0),ciclos(0) {}
 template <typename T>
 Lista<T>::Lista(const Lista& otra)
-    : cabeza(0), cola(0), tam(0), cursor(0), indiceCursor(0) {
+    : cabeza(0),cola(0),tam(0),cursor(0),indiceCursor(0),ciclos(0) {
     for (Nodo* n = otra.cabeza; n != 0; n = n->sig) {
         agregarAlFinal(n->dato);
-
+        ciclos++;
     }
 }
 template <typename T>
@@ -106,7 +108,7 @@ Lista<T>& Lista<T>::operator=(const Lista& otra) {
         vaciar();
         for (Nodo* n = otra.cabeza; n != 0; n = n->sig) {
             agregarAlFinal(n->dato);
-
+            ciclos++;
         }
     }
     return *this;
@@ -120,20 +122,14 @@ const T& Lista<T>::operator[](int indice) const {
     return nodoEnConst(indice)->dato;
 }
 template <typename T>
-Lista<T>& Lista<T>::operator+=(const T& dato) {
-    agregarAlFinal(dato);
-    return *this;
-}
-template <typename T>
-Lista<T>& Lista<T>::operator+=(const Lista& otra) {
+void Lista<T>::concatenar(const Lista& otra) {
     int cantidad = otra.tam;
     Nodo* p = otra.cabeza;
     for (int i = 0; i < cantidad; i++) {
         agregarAlFinal(p->dato);
         p = p->sig;
-
+        ciclos++;
     }
-    return *this;
 }
 template <typename T>
 void Lista<T>::agregarAlFinal(const T& dato) {
@@ -167,7 +163,7 @@ void Lista<T>::insertarOrdenado(const T& dato) {
     while (n !=0 && dato< n ->dato) {
         pos=n;
         n=n->ant;
-
+        ciclos++;
     }
     enlazarAntesDe(pos,new Nodo(dato));
     cursor = 0;
@@ -185,7 +181,6 @@ bool Lista<T>::eliminarUltimo() {
     quitarNodo(cola);
     return true;
 }
-
 template <typename T>
 bool Lista<T>::eliminarEn(int indice) {
     if (indice < 0 || indice >= tam)
@@ -200,7 +195,7 @@ void Lista<T>::vaciar() {
         Nodo* sig=n->sig;
         delete n;
         n=sig;
-
+        ciclos++;
     }
     cabeza=0;
     cola=0;

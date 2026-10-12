@@ -16,6 +16,7 @@ private:
     int   tam;
     Nodo* cursor;
     int   indiceCursor;
+    mutable long long ciclos;
     Nodo* caminar(Nodo* actual, int pos, int indice) const;
     Nodo* nodoEnConst(int indice) const;
     Nodo* nodoEn(int indice);
@@ -28,8 +29,7 @@ public:
     Lista& operator=(const Lista& otra);
     T& operator[](int indice);
     const T& operator[](int indice) const;
-    Lista& operator+=(const T& dato);
-    Lista& operator+=(const Lista& otra);
+   void concatenar(const Lista& otra);
     void agregarAlFinal(const T& dato);
     void agregarAlInicio(const T& dato);
     bool insertarEn(int indice, const T& dato);
@@ -44,6 +44,8 @@ public:
     const T& primero() const { return cabeza->dato; }
     T& ultimo(){ return cola->dato; }
     const T& ultimo()const { return cola->dato; }
+    long long getCiclos() const { return ciclos; }
+    void reiniciarCiclos() const { ciclos = 0; }
 };
 #include "lista.cpp"
 
