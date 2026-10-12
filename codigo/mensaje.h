@@ -15,7 +15,7 @@ public:
     mensaje();
     mensaje(const std::string& txt,usuario* emi,usuario* rec,fecha f);
     ~mensaje();
-    std::string gettexto();
+    std::string gettexto() const;
     bool esleido() const;
     void marcarleido();
     usuario* getemisor() const;
