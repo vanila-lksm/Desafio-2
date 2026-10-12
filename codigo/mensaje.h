@@ -2,6 +2,7 @@
 #define MENSAJE_H
 #include <string>
 #include "fecha.h"
+class usuario;
 class mensaje
 {
 private:
@@ -11,6 +12,7 @@ private:
     usuario* emisor;
     usuario* receptor;
 public:
+    mensaje();
     mensaje(const std::string& txt,usuario* emi,usuario* rec,fecha f);
     ~mensaje();
     std::string gettexto();

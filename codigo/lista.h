@@ -1,8 +1,8 @@
-#ifndef LISTA_H
-#define LISTA_H
+#ifndef lista_H
+#define lista_H
 
 template <typename T>
-class Lista {
+class lista {
 private:
     class Nodo {
     public:
@@ -23,13 +23,13 @@ private:
     void  enlazarAntesDe(Nodo* pos, Nodo* nuevo);
     void  quitarNodo(Nodo* n);
 public:
-    Lista();
-    Lista(const Lista& otra);
-    ~Lista();
-    Lista& operator=(const Lista& otra);
+    lista();
+    lista(const lista& otra);
+    ~lista();
+    lista& operator=(const lista& otra);
     T& operator[](int indice);
     const T& operator[](int indice) const;
-   void concatenar(const Lista& otra);
+   void concatenar(const lista& otra);
     void agregarAlFinal(const T& dato);
     void agregarAlInicio(const T& dato);
     bool insertarEn(int indice, const T& dato);
@@ -49,4 +49,4 @@ public:
 };
 #include "lista.cpp"
 
-#endif // LISTA_H
+#endif // lista_H
