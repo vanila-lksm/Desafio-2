@@ -25,17 +25,17 @@ public:
     unsigned char getMes() const;
     unsigned char getDia() const;
     //funciones
-    bool esBisiesto(short int a);
-    short int diasDelMes(short int a, short int m);
-    bool validar(short int a, short int m, short int d);
-    fecha fechaHoy();
-    bool desdeTexto(const string& texto, unsigned int& iteraciones);
+    static bool esBisiesto(short int a);
+    static short int diasDelMes(short int a, short int m);
+    static bool validar(short int a, short int m, short int d);
+    static fecha fechaHoy(unsigned long int& iteraciones);
+    bool desdeTexto(const string& texto, unsigned long int& iteraciones);
     //operadores
-    fecha& operator=(const fecha& otra);
+    fecha& operator=(const fecha otra);
     bool operator==(fecha otra) const;
-    bool operator<=(const fecha& otra) const;
-    bool operator>=(const fecha& otra) const;
-    ostream& operator<<(ostream& os);
+    bool operator<=(const fecha otra) const;
+    bool operator>=(const fecha otra) const;
+    friend ostream& operator<<(ostream& os, const fecha f);
 };
 
 #endif // FECHA_H

@@ -15,14 +15,14 @@ public:
     //set()
     void setAmistades(const unsigned long long int* nuevas, unsigned int c_u);
     void setCantidadUsuarios(unsigned int c_u);
-    void setMarca(unsigned int i, unsigned int j, unsigned char valor);
+    void setMarca(unsigned int i, unsigned int j, bool valor);
     //get()
     short int getEspaciosFila()const;
     unsigned int getCantidad_usuarios()const;
-    unsigned long long int* getAmistades()const;
+    const unsigned long long int* getAmistades()const;
     bool getMarca(unsigned int i, unsigned int j)const;
     //funciones
-    unsigned int amigosEnComun(unsigned int i, unsigned int j,unsigned int& iteraciones);
+    unsigned int amigosEnComun(unsigned int i, unsigned int j,unsigned long int& iteraciones);
     static unsigned char u_BitMasBajo(unsigned long long combinado);
     //operadores
     relaciones& operator=(const relaciones& otra);

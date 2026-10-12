@@ -1,5 +1,5 @@
 #include "fecha.h"
-#include <ctime>
+#include <chrono>
 
 fecha::fecha(): anio(2026), mes(1), dia(1) {}
 
@@ -14,6 +14,7 @@ fecha:: fecha(const fecha& otra)
     mes=otra.mes;
     dia=otra.dia;
 }
+fecha::~fecha(){}
 //set()
 bool fecha::setFecha(short int _anio, short int _mes, short int _dia)
 {
@@ -50,7 +51,7 @@ unsigned char fecha::getMes() const{return mes;}
 unsigned char fecha::getDia() const{return dia;}
 
 //funciones
-bool fecha::desdeTexto(const string& texto, unsigned int& iteraciones)
+bool fecha::desdeTexto(const string& texto, unsigned long int& iteraciones)
 {
     if(texto.size() !=10 || texto[4]!='-' || texto[7]!='-')
         return false;
@@ -99,18 +100,37 @@ bool fecha::validar(short int _anio, short int _mes, short int _dia)
     return true;
 }
 
-fecha fecha:: fechaHoy()
+fecha fecha:: fechaHoy(unsigned long int& iteraciones)
 {
-    std::time_t tiempoActual = std::time(nullptr);
-    std::tm* fechaLocal = std::localtime(&tiempoActual);
-    short int anio = fechaLocal->tm_year + 1900; // tm_year cuenta los años desde 1900
-    unsigned char mes  = static_cast<unsigned char>(fechaLocal->tm_mon + 1);     // tm_mon va de 0 (enero) a 11 (diciembre)
-    unsigned char dia  = static_cast<unsigned char>(fechaLocal->tm_mday);
-    return fecha(anio,mes,dia);
+    using namespace std::chrono;
+
+    // system_clock cuenta desde 1970-01-01 en UTC. Colombia es UTC-5.
+    long long int horas = duration_cast<hours>(system_clock::now().time_since_epoch()).count() - 5;
+    long int dias  = horas / 24;
+
+    // Descuenta años completos desde 1970.
+    short int a = 1970;
+    while (dias >= (esBisiesto(a) ? 366 : 365))
+    {
+        dias -= esBisiesto(a) ? 366 : 365;
+        a++;
+        iteraciones++;
+    }
+    // Descuenta meses completos del año que quedó.
+    short int m = 1;
+    while (dias >= diasDelMes(a, m))
+    {
+        dias -= diasDelMes(a, m);
+        m++;
+        iteraciones++;
+    }
+
+    // Lo que sobra son los días transcurridos del mes; el día 1 es el primero.
+    return fecha(a, m, static_cast<short int>(dias) + 1);
 }
 //operadores
 
-fecha& fecha::operator=(const fecha& otra)
+fecha& fecha::operator=(const fecha otra)
 {
     anio = otra.anio;
     mes = otra.mes;
@@ -118,12 +138,12 @@ fecha& fecha::operator=(const fecha& otra)
     return *this;
 }
 
-bool fecha::operator==(fecha otra) const
+bool fecha::operator==(const fecha otra) const
 {
     return (anio == otra.anio && mes == otra.mes && dia == otra.dia);
 }
 
-bool fecha::operator<=(const fecha& otra) const
+bool fecha::operator<=(const fecha otra) const
 {
     if (anio != otra.anio)
         return anio < otra.anio;
@@ -132,7 +152,7 @@ bool fecha::operator<=(const fecha& otra) const
     return dia <= otra.dia;
 }
 
-bool fecha::operator>=(const fecha& otra) const
+bool fecha::operator>=(const fecha otra) const
 {
     if (anio != otra.anio)
         return anio > otra.anio;
@@ -141,9 +161,13 @@ bool fecha::operator>=(const fecha& otra) const
     return dia >= otra.dia;
 }
 
-ostream& fecha::operator<<(ostream& os)
+ostream& operator<<(ostream& os,const fecha f)
 {
-    os<<anio <<"/" <<mes <<"/" <<dia <<endl;
+    os << f.anio << '-';
+    if (f.mes < 10) os << '0';
+    os << static_cast<int>(f.mes) << '-';
+    if (f.dia < 10) os << '0';
+    os << static_cast<int>(f.dia);
     return os;
 }
 

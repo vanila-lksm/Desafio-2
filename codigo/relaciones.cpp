@@ -7,8 +7,7 @@ relaciones::relaciones(unsigned int c_u)
 }
 relaciones::relaciones(const relaciones& otra)
 {
-    amistades=otra.amistades;
-    cantidad_usuarios=otra.cantidad_usuarios;
+    setAmistades(otra.amistades,otra.cantidad_usuarios);
 }
 relaciones::~relaciones()
 {
@@ -32,43 +31,43 @@ void relaciones::setAmistades(const unsigned long long int* nuevas, unsigned int
         amistades[k] = nuevas[k];
     }
 }
-void relaciones::setMarca(unsigned int i, unsigned int j, unsigned char valor)
+void relaciones::setMarca(unsigned int i, unsigned int j, bool valor)
 {
     unsigned int ubicacion=i*getEspaciosFila()+j/64;
-    unsigned long long int mascara=valor<<(j%64);
+    unsigned long long int mascara=1ULL<<(j%64);
     if(valor)
-        amistades[ubicacion]|=mascara;
+        amistades[ubicacion]|= mascara;
     else
-        amistades[ubicacion]|=~mascara;
+        amistades[ubicacion]&= ~mascara;
 }
 //get()
 short int relaciones::getEspaciosFila()const
-{return(cantidad_usuarios+63/64);}
+{return(cantidad_usuarios+63)/64;}
 
 unsigned int relaciones::getCantidad_usuarios()const
 {return cantidad_usuarios;}
 
-unsigned long long int* relaciones::getAmistades()const
+const unsigned long long int* relaciones::getAmistades()const
 {return amistades;}
 
 bool relaciones::getMarca(unsigned int i, unsigned int j)const
 {
     unsigned int ubicacion=i*getEspaciosFila()+j/64;
-    return(amistades[ubicacion]>>(j%64)&1Ull);
+    return((amistades[ubicacion]>>(j%64))&1Ull);
 }
 //funciones
-unsigned int relaciones::amigosEnComun(unsigned int i,unsigned int j, unsigned int& iteraciones)
+unsigned int relaciones::amigosEnComun(unsigned int i,unsigned int j, unsigned long int& iteraciones)
 {
-    unsigned int c_u=getCantidad_usuarios();
+    unsigned int espacios=getEspaciosFila();
     unsigned int abyacencias=0;
-    for(unsigned short int k=0;k<c_u;k++)
+    for(unsigned int k=0;k<espacios;k++)
     {
         iteraciones++;
-        unsigned long long combinado=amistades[i*c_u+k]&amistades[j*c_u+k];
+        unsigned long long combinado=amistades[i*espacios+k]&amistades[j*espacios+k];
         while(combinado!=0)
         {
             iteraciones++;
-            unsigned int x=k * c_u + u_BitMasBajo(combinado);
+            unsigned int x=k * espacios + u_BitMasBajo(combinado);
             if(getMarca(x,i) && getMarca(x,j))
                 abyacencias++;
             combinado&=combinado-1;
