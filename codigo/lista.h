@@ -1,28 +1,50 @@
 #ifndef LISTA_H
 #define LISTA_H
-#include "mensaje.h"
 
-class lista {
+template <typename T>
+class Lista {
 private:
-    struct Nodo {
-        mensaje* dato;
-        Nodo* siguiente;
-        Nodo* anterior;
-        Nodo(mensaje*val):dato(val),siguiente(nullptr),anterior(nullptr){}
+    class Nodo {
+    public:
+        T dato;
+        Nodo* sig;
+        Nodo* ant;
+        Nodo(const T& d) : dato(d), sig(0), ant(0) {}
     };
-
     Nodo* cabeza;
     Nodo* cola;
-    int cantidad;
+    int   tam;
+    Nodo* cursor;
+    int   indiceCursor;
+    Nodo* caminar(Nodo* actual, int pos, int indice) const;
+    Nodo* nodoEnConst(int indice) const;
+    Nodo* nodoEn(int indice);
+    void  enlazarAntesDe(Nodo* pos, Nodo* nuevo);
+    void  quitarNodo(Nodo* n);
 public:
-    lista();
-    lista(const lista& otro);
-    ~lista();
-    lista& operator=(const lista& otro);
-    void agregar(mensaje* elemento);
-    mensaje* obtener(int indice) const;
-    int tamano() const;
-    void eliminar(int indice);
+    Lista();
+    Lista(const Lista& otra);
+    ~Lista();
+    Lista& operator=(const Lista& otra);
+    T& operator[](int indice);
+    const T& operator[](int indice) const;
+    Lista& operator+=(const T& dato);
+    Lista& operator+=(const Lista& otra);
+    void agregarAlFinal(const T& dato);
+    void agregarAlInicio(const T& dato);
+    bool insertarEn(int indice, const T& dato);
+    void insertarOrdenado(const T& dato);
+    bool eliminarPrimero();
+    bool eliminarUltimo();
+    bool eliminarEn(int indice);
+    void vaciar();
+    int  tamanio()const { return tam; }
+    bool vacia()const { return tam == 0; }
+    T& primero(){ return cabeza->dato; }
+    const T& primero() const { return cabeza->dato; }
+    T& ultimo(){ return cola->dato; }
+    const T& ultimo()const { return cola->dato; }
 };
+#include "lista.cpp"
 
 #endif // LISTA_H
