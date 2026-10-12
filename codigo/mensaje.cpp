@@ -27,9 +27,6 @@ bool mensaje::esleido() const {
 void mensaje::marcarleido() {
     leido = true;
 }
-usuario* mensaje::getemisor() const {
-    return emisor;
-}
 usuario* mensaje::getreceptor() const {
     return receptor;
 }
