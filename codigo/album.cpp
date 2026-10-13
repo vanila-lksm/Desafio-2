@@ -33,3 +33,4 @@ const lista<foto>& album::getcoleccionfotos() const {
 void album::agregarfoto(const foto& f) {
     coleccion_fotos.agregarAlFinal(f);
 }
+//borrar

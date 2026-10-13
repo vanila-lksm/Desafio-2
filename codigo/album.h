@@ -25,5 +25,6 @@ public:
     const lista<foto>& getcoleccionfotos() const;
     void agregarfoto(const foto& f);
 };
+//borrar
 
 #endif // ALBUM_H
