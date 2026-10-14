@@ -74,7 +74,10 @@ unsigned long int foto:: memoriaFoto()
     }
     return total;
 }
-
+string foto::rutaFoto(string& rutaAlbum)
+{
+    return rutaAlbum + "/" + nombre +".png";
+}
 //operadores
 foto& foto:: operator=(const foto& otra)
 {
@@ -85,7 +88,7 @@ foto& foto:: operator=(const foto& otra)
     return *this;
 }
 
-bool foto:: operator==(const foto& otra)
+bool foto:: operator==(const foto& otra) const
 {
     if(nombre==otra.nombre && publicada==otra.publicada &&
         tamanio==otra.tamanio && likes==otra.likes)

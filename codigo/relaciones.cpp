@@ -1,7 +1,7 @@
 #include "relaciones.h"
 
 relaciones::relaciones() {}
-relaciones::relaciones(unsigned int c_u)
+relaciones::relaciones(int c_u)
 {
     setCantidadUsuarios(c_u);
 }
@@ -14,14 +14,14 @@ relaciones::~relaciones()
     delete[] amistades;
 }
 //set()
-void relaciones::setCantidadUsuarios(unsigned int n)
+void relaciones::setCantidadUsuarios(int n)
 {
     delete[] amistades;
     cantidad_usuarios = n;
     unsigned int total = n * getEspaciosFila();
     amistades = (total > 0) ? new unsigned long long[total]() : nullptr;
 }
-void relaciones::setAmistades(const unsigned long long int* nuevas, unsigned int n)
+void relaciones::setAmistades(const unsigned long long int* nuevas, int n)
 {
     if (nuevas == amistades) return;
     setCantidadUsuarios(n);
@@ -31,7 +31,7 @@ void relaciones::setAmistades(const unsigned long long int* nuevas, unsigned int
         amistades[k] = nuevas[k];
     }
 }
-void relaciones::setMarca(unsigned int i, unsigned int j, bool valor)
+void relaciones::setMarca(int i, int j, bool valor)
 {
     unsigned int ubicacion=i*getEspaciosFila()+j/64;
     unsigned long long int mascara=1ULL<<(j%64);
@@ -50,20 +50,20 @@ unsigned int relaciones::getCantidad_usuarios()const
 const unsigned long long int* relaciones::getAmistades()const
 {return amistades;}
 
-bool relaciones::getMarca(unsigned int i, unsigned int j)const
+bool relaciones::getMarca(int i, int j)const
 {
     unsigned int ubicacion=i*getEspaciosFila()+j/64;
     return((amistades[ubicacion]>>(j%64))&1Ull);
 }
 //funciones
-unsigned int relaciones::amigosEnComun(unsigned int i,unsigned int j, unsigned long int& iteraciones)
+unsigned int relaciones::amigosEnComun(int i,int j, unsigned long int& iteraciones)
 {
     unsigned int espacios=getEspaciosFila();
     unsigned int abyacencias=0;
     for(unsigned int k=0;k<espacios;k++)
     {
         iteraciones++;
-        unsigned long long combinado=amistades[i*espacios+k]&amistades[j*espacios+k];
+        unsigned long long combinado=amistades[i*espacios+k] & amistades[j*espacios+k];
         while(combinado!=0)
         {
             iteraciones++;

@@ -31,11 +31,13 @@ public:
     bool darLike();
     bool quitarLike();
     unsigned long int memoriaFoto();
+    string rutaFoto(string& rutaAlbum);
     //operadores
     foto& operator=(const foto& otra);
-    bool operator==(const foto& otra);
-    friend ostream& operator<<(ostream& os, const foto& f);
+    bool operator==(const foto& otra) const;
 
 };
+
+ostream& operator<<(ostream& os, const foto& f);
 
 #endif // FOTO_H

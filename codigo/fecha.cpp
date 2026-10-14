@@ -99,7 +99,10 @@ bool fecha::validar(short int _anio, short int _mes, short int _dia)
         return false;
     return true;
 }
-
+bool fecha::validar() const
+{
+    return validar(anio,mes,dia);
+}
 fecha fecha:: fechaHoy(unsigned long int& iteraciones)
 {
     using namespace std::chrono;

@@ -28,6 +28,7 @@ public:
     static bool esBisiesto(short int a);
     static short int diasDelMes(short int a, short int m);
     static bool validar(short int a, short int m, short int d);
+    bool validar() const;
     static fecha fechaHoy(unsigned long int& iteraciones);
     bool desdeTexto(const string& texto, unsigned long int& iteraciones);
     //operadores
