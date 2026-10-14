@@ -4,18 +4,20 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        album.cpp \
-        codigo/lista.cpp \
-        codigo/main.cpp \
-        codigo/mensaje.cpp \
-        codigo/fecha.cpp \
-        foto.cpp \
-        nodo.cpp
+    album.cpp \
+    lista.cpp \
+    main.cpp \
+    mensaje.cpp \
+    nodo.cpp \
+    fecha.cpp \
+    foto.cpp \
+    relaciones.cpp
 
 HEADERS += \
     album.h \
-    codigo/lista.h \
-    codigo/mensaje.h \
-    codigo/fecha.h \
+    lista.h \
+    mensaje.h \
+    nodo.h \
+    fecha.h \
     foto.h \
-    nodo.h
+    relaciones.h
