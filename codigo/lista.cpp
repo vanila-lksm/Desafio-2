@@ -222,6 +222,7 @@ void lista<T>::vaciar() {
     cola=0;
     tam=0;
     cursor=0;
+    indiceCursor=0;
 }
 
 #endif // LISTA_CPP

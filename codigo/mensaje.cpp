@@ -8,7 +8,7 @@ mensaje::mensaje(const std::string& txt, int emi, int rec, const fecha& f)
 {
     if (!setTexto(txt))
         texto = "[mensaje invalido]";
-    setEmisor(emi);      // si es invalido queda en -1
+    setEmisor(emi);
     setReceptor(rec);
 }
 
@@ -37,8 +37,13 @@ bool mensaje::setReceptor(int rec)
 }
 
 const std::string& mensaje::getTexto() const { return texto; }
-bool mensaje::esLeido() const { return leido; }
-void mensaje::marcarLeido() { leido = true; }
-int mensaje::getEmisor() const { return emisor; }
-int mensaje::getReceptor() const { return receptor; }
-fecha mensaje::getFecha() const { return fecha_envio; }
+bool mensaje::esLeido() const {
+    return leido; }
+void mensaje::marcarLeido() {
+    leido = true; }
+int mensaje::getEmisor() const {
+    return emisor; }
+int mensaje::getReceptor() const {
+    return receptor; }
+fecha mensaje::getFecha() const {
+    return fecha_envio; }
