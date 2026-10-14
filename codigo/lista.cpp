@@ -84,13 +84,12 @@ void lista<T>::quitarNodo(Nodo<T>* n) {
     cursor=0;
 }
 template <typename T>
-lista<T>::lista() : cabeza(0), cola(0), tam(0), cursor(0), indiceCursor(0), ciclos(0) {}
+lista<T>::lista() : cabeza(0), cola(0), tam(0), cursor(0), indiceCursor(0) {}
 template <typename T>
 lista<T>::lista(const lista& otra)
-    : cabeza(0),cola(0),tam(0),cursor(0),indiceCursor(0),ciclos(0) {
+    : cabeza(0),cola(0),tam(0),cursor(0),indiceCursor(0) {
     for (Nodo<T>* n=otra.cabeza; n !=0;n=n->sig) {
         agregarAlFinal(n->dato);
-        ciclos++;
     }
 }
 template <typename T>
@@ -103,7 +102,6 @@ lista<T>& lista<T>::operator=(const lista& otra) {
         vaciar();
         for (Nodo<T>* n = otra.cabeza; n !=0;n=n->sig) {
             agregarAlFinal(n->dato);
-            ciclos++;
         }
     }
     return *this;
@@ -132,7 +130,6 @@ bool lista<T>::operator==(const lista& otra) const {
     Nodo<T>* a=cabeza;
     Nodo<T>* b=otra.cabeza;
     while (a !=0) {
-        ciclos++;
         if (!(a->dato==b->dato)) return false;
         a=a->sig;
         b=b->sig;
@@ -150,7 +147,6 @@ void lista<T>::concatenar(const lista& otra) {
     for (int i=0;i<cantidad;i++) {
         agregarAlFinal(p->dato);
         p=p->sig;
-        ciclos++;
     }
 }
 template <typename T>
@@ -186,7 +182,6 @@ void lista<T>::insertarOrdenado(const T& dato) {
     while (n !=0 && dato < n->dato) {
         pos=n;
         n=n->ant;
-        ciclos++;
     }
     enlazarAntesDe(pos, new Nodo<T>(dato));
     cursor=0;
@@ -219,7 +214,6 @@ void lista<T>::vaciar() {
         Nodo<T>* sig=n->sig;
         delete n;
         n=sig;
-        ciclos++; // Tu contador interno
     }
     cabeza=0;
     cola=0;

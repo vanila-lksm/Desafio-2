@@ -10,7 +10,6 @@ private:
     int tam;
     mutable Nodo<T>* cursor;
     mutable int   indiceCursor;
-    mutable long long ciclos;
     Nodo<T>* caminar(Nodo<T>* actual, int pos, int indice, unsigned long& iteraciones) const;
     Nodo<T>* nodoEn(int indice, unsigned long& iteraciones) const;
     void  enlazarAntesDe(Nodo<T>* pos, Nodo<T>* nuevo);
@@ -36,12 +35,10 @@ public:
     void vaciar();
     int  tamanio() const { return tam; }
     bool vacia() const { return tam == 0; }
-    T& primero() { return cabeza->dato; }
-    const T& primero() const { return cabeza->dato; }
-    T& ultimo() { return cola->dato; }
-    const T& ultimo() const { return cola->dato; }
-    long long getCiclos() const { return ciclos; }
-    void reiniciarCiclos() const { ciclos = 0; }
+    T* primero() { return (cabeza != 0) ? &cabeza->dato : 0; }
+    const T* primero() const { return (cabeza != 0) ? &cabeza->dato : 0; }
+    T* ultimo() { return (cola != 0) ? &cola->dato : 0; }
+    const T* ultimo() const { return (cola != 0) ? &cola->dato : 0; }
     unsigned long memoria() const;
 };
 #include "lista.cpp"

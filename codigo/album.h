@@ -1,31 +1,25 @@
 #ifndef ALBUM_H
 #define ALBUM_H
 #include <string>
-#include"foto.h"
-#include"lista.h"
+#include "lista.h"
+#include "foto.h"
 
-class album
-{
+class album {
 private:
     std::string nombre;
-    std::string ruta_almacenamiento;
-    std::string privacidad;
+    unsigned char privacidad;
     lista<foto> coleccion_fotos;
 public:
     album();
-    album(const std::string& nom,const std::string& ruta,const std::string& priv);
+    album(const std::string& nom, unsigned char priv);
     ~album();
     std::string getNombre() const;
-    std::string getRutaAlmacenamiento() const;
-    std::string getPrivacidad() const;
-    void setNombre(const std::string& nom);
-    void setRutaAlmacenamiento(const std::string& ruta);
-    void setPrivacidad(const std::string& priv);
-    lista<foto>& getcoleccionfotos();
-    const lista<foto>& getcoleccionfotos() const;
-    void agregarfoto(const foto& f);
+    unsigned char getPrivacidad() const;
+    bool setNombre(const std::string& nom);
+    bool setPrivacidad(unsigned char priv);
+    lista<foto>& getColeccionFotos();
+    const lista<foto>& getColeccionFotos() const;
+    void agregarFoto(const foto& f);
 };
-ostream& operator<<(std::ostream& os, const album& a)
-//borrar
 
 #endif // ALBUM_H

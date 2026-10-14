@@ -1,36 +1,35 @@
 #include "album.h"
-#include "lista.h"
-#include "foto.h"
-
-album::album():nombre(""),ruta_almacenamiento(""),privacidad("público") {}
-album::album(const std::string& nom,const std::string& ruta,const std::string& priv)
-    : nombre(nom),ruta_almacenamiento(ruta),privacidad(priv) {}
+#include <string>
+album::album() : nombre(""), privacidad('P') {}
+album::album(const std::string& nom, unsigned char priv) {
+    if (!setNombre(nom)) nombre="SinNombre";
+    if (!setPrivacidad(priv)) privacidad='P';
+}
 album::~album() {}
 std::string album::getNombre() const {
     return nombre;
 }
-std::string album::getRutaAlmacenamiento() const {
-    return ruta_almacenamiento;
-}
-std::string album::getPrivacidad() const {
+unsigned char album::getPrivacidad() const {
     return privacidad;
 }
-void album::setNombre(const std::string& nom) {
+bool album::setNombre(const std::string& nom) {
+    if (nom.empty() || nom.find(';') !=std::string::npos)
+        return false;
     nombre = nom;
+    return true;
 }
-void album::setRutaAlmacenamiento(const std::string& ruta) {
-    ruta_almacenamiento = ruta;
-}
-void album::setPrivacidad(const std::string& priv) {
+bool album::setPrivacidad(unsigned char priv) {
+    if (priv !='P' && priv !='R' && priv !='A')
+        return false;
     privacidad = priv;
+    return true;
 }
-lista<foto>& album::getcoleccionfotos() {
+lista<foto>& album::getColeccionFotos() {
     return coleccion_fotos;
 }
-const lista<foto>& album::getcoleccionfotos() const {
+const lista<foto>& album::getColeccionFotos() const {
     return coleccion_fotos;
 }
-void album::agregarfoto(const foto& f) {
+void album::agregarFoto(const foto& f) {
     coleccion_fotos.agregarAlFinal(f);
 }
-//borrar

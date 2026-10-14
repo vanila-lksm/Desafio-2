@@ -2,22 +2,23 @@
 mensaje::mensaje() {
     texto="";
     leido=false;
-    emisor=nullptr;
-    receptor=nullptr;
+    emisor=-1;
+    receptor=-1;
 
 }
-mensaje::mensaje(const std::string& txt,usuario* emi,usuario* rec,fecha f) {
-    if (txt.length() > 512) {
-        texto=txt.substr(0, 512);
-    } else {
-        texto=txt;
+mensaje::mensaje(const std::string& txt, int emi, int rec, fecha f)
+    : leido(false), fecha_envio(f), emisor(emi), receptor(rec)  {
+    if (!setTexto(txt)) {
+        texto = "[mensaje invalido]";
     }
-    leido=false;
-    emisor=emi;
-    receptor=rec;
-    fecha_envio=f;
 }
 mensaje::~mensaje() {}
+bool mensaje::setTexto(const std::string& txt) {
+    if (txt.empty()) return false;
+    if (txt.size() > 512) return false;
+    texto = txt;
+    return true;
+}
 std::string mensaje::gettexto() const {
     return texto;
 }
@@ -27,20 +28,12 @@ bool mensaje::esleido() const {
 void mensaje::marcarleido() {
     leido = true;
 }
-usuario* mensaje::getemisor() const {
+int mensaje::getemisor() const {
     return emisor;
 }
-usuario* mensaje::getreceptor() const {
+int mensaje::getreceptor() const {
     return receptor;
 }
 fecha mensaje::getfecha() const {
     return fecha_envio;
-}
-ostream& operator<<(std::ostream& os, const mensaje& m)
-{
-    os << m.getEmisor() << ';'
-       << m.getEnvio() << ';'
-       << (m.getLeido() ? 1 : 0) << ';'
-       << m.getTexto();
-    return os;
 }
