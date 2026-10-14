@@ -1,6 +1,7 @@
 #ifndef LISTA_CPP
 #define LISTA_CPP
 #include "lista.h"
+#include <stdexcept>
 
 template <typename T>
 Nodo<T>* lista<T>::caminar(Nodo<T>* actual, int pos, int indice, unsigned long& iteraciones)
@@ -17,6 +18,8 @@ Nodo<T>* lista<T>::caminar(Nodo<T>* actual, int pos, int indice, unsigned long& 
 }
 template <typename T>
 Nodo<T>* lista<T>::nodoEn(int indice, unsigned long& iteraciones) const {
+    if (indice < 0 || indice >= tam)
+        throw std::out_of_range("lista: indice fuera de rango");
     int dCab=indice;
     int dCol=tam-1-indice;
     int dCur=tam;

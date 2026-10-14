@@ -1,6 +1,6 @@
 #include "album.h"
 #include <string>
-album::album() : nombre(""), privacidad('P') {}
+album::album() : nombre("SinNombre"), privacidad('P') {}
 album::album(const std::string& nom, unsigned char priv) {
     if (!setNombre(nom)) nombre="SinNombre";
     if (!setPrivacidad(priv)) privacidad='P';
