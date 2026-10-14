@@ -22,5 +22,6 @@ public:
     usuario* getreceptor() const;
     fecha getfecha() const;
 };
+ostream& operator<<(std::ostream& os, const mensaje& m)
 
 #endif // MENSAJE_H

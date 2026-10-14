@@ -25,6 +25,7 @@ public:
     const lista<foto>& getcoleccionfotos() const;
     void agregarfoto(const foto& f);
 };
+ostream& operator<<(std::ostream& os, const album& a)
 //borrar
 
 #endif // ALBUM_H

@@ -27,9 +27,20 @@ bool mensaje::esleido() const {
 void mensaje::marcarleido() {
     leido = true;
 }
+usuario* mensaje::getemisor() const {
+    return emisor;
+}
 usuario* mensaje::getreceptor() const {
     return receptor;
 }
 fecha mensaje::getfecha() const {
     return fecha_envio;
+}
+ostream& operator<<(std::ostream& os, const mensaje& m)
+{
+    os << m.getEmisor() << ';'
+       << m.getEnvio() << ';'
+       << (m.getLeido() ? 1 : 0) << ';'
+       << m.getTexto();
+    return os;
 }
