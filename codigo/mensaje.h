@@ -2,6 +2,7 @@
 #define MENSAJE_H
 #include <string>
 #include "fecha.h"
+
 class mensaje
 {
 private:
@@ -12,14 +13,16 @@ private:
     int receptor;
 public:
     mensaje();
-    mensaje(const std::string& txt,int emi,int rec,fecha f);
+    mensaje(const std::string& txt, int emi, int rec, const fecha& f);
     ~mensaje();
     bool setTexto(const std::string& txt);
-    std::string gettexto() const;
-    bool esleido() const;
-    void marcarleido();
-    int getemisor() const;
-    int getreceptor() const;
-    fecha getfecha() const;
+    bool setEmisor(int emi);
+    bool setReceptor(int rec);
+    const std::string& getTexto() const;
+    bool esLeido() const;
+    void marcarLeido();
+    int getEmisor() const;
+    int getReceptor() const;
+    fecha getFecha() const;
 };
 #endif // MENSAJE_H

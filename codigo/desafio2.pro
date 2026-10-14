@@ -5,10 +5,8 @@ CONFIG -= qt
 
 SOURCES += \
     album.cpp \
-    lista.cpp \
     main.cpp \
     mensaje.cpp \
-    nodo.cpp \
     fecha.cpp \
     foto.cpp \
     relaciones.cpp
