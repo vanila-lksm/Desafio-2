@@ -1,27 +1,20 @@
-#ifndef lista_H
-#define lista_H
+#ifndef LISTA_H
+#define LISTA_H
+#include "nodo.h"
 
 template <typename T>
 class lista {
 private:
-    class Nodo {
-    public:
-        T dato;
-        Nodo* sig;
-        Nodo* ant;
-        Nodo(const T& d) : dato(d), sig(0), ant(0) {}
-    };
-    Nodo* cabeza;
-    Nodo* cola;
-    int   tam;
-    Nodo* cursor;
-    int   indiceCursor;
+    Nodo<T>* cabeza;
+    Nodo<T>* cola;
+    int tam;
+    mutable Nodo<T>* cursor;
+    mutable int   indiceCursor;
     mutable long long ciclos;
-    Nodo* caminar(Nodo* actual, int pos, int indice) const;
-    Nodo* nodoEnConst(int indice) const;
-    Nodo* nodoEn(int indice);
-    void  enlazarAntesDe(Nodo* pos, Nodo* nuevo);
-    void  quitarNodo(Nodo* n);
+    Nodo<T>* caminar(Nodo<T>* actual, int pos, int indice, unsigned long& iteraciones) const;
+    Nodo<T>* nodoEn(int indice, unsigned long& iteraciones) const;
+    void  enlazarAntesDe(Nodo<T>* pos, Nodo<T>* nuevo);
+    void  quitarNodo(Nodo<T>* n);
 public:
     lista();
     lista(const lista& otra);
@@ -29,7 +22,10 @@ public:
     lista& operator=(const lista& otra);
     T& operator[](int indice);
     const T& operator[](int indice) const;
-   void concatenar(const lista& otra);
+    T& en(int indice, unsigned long& iteraciones);
+    const T& en(int indice, unsigned long& iteraciones) const;
+    bool operator==(const lista& otra) const;
+    void concatenar(const lista& otra);
     void agregarAlFinal(const T& dato);
     void agregarAlInicio(const T& dato);
     bool insertarEn(int indice, const T& dato);
@@ -38,15 +34,15 @@ public:
     bool eliminarUltimo();
     bool eliminarEn(int indice);
     void vaciar();
-    int  tamanio()const { return tam; }
-    bool vacia()const { return tam == 0; }
-    T& primero(){ return cabeza->dato; }
+    int  tamanio() const { return tam; }
+    bool vacia() const { return tam == 0; }
+    T& primero() { return cabeza->dato; }
     const T& primero() const { return cabeza->dato; }
-    T& ultimo(){ return cola->dato; }
-    const T& ultimo()const { return cola->dato; }
+    T& ultimo() { return cola->dato; }
+    const T& ultimo() const { return cola->dato; }
     long long getCiclos() const { return ciclos; }
     void reiniciarCiclos() const { ciclos = 0; }
+    unsigned long memoria() const;
 };
 #include "lista.cpp"
-
-#endif // lista_H
+#endif // LISTA_H
