@@ -24,9 +24,10 @@ public:
     //funciones
     unsigned int amigosEnComun(int i,int j,unsigned long int& iteraciones);
     static unsigned char u_BitMasBajo(unsigned long long combinado);
+    unsigned long memoriaRelaciones() const;
     //operadores
     relaciones& operator=(const relaciones& otra);
-    bool operator==(const relaciones& otra);
+    bool operator==(const relaciones& otra) const;
 
 
 };
