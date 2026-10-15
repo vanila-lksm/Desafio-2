@@ -14,7 +14,7 @@ usuario::usuario(const usuario& otro)
     : nombre(otro.nombre), clave(otro.clave), correo(otro.correo),
     ciudad(otro.ciudad), pais(otro.pais),
     nacimiento(otro.nacimiento), inscripcion(otro.inscripcion),
-    colecion_albums(otro.colecion_albums) {}
+    colecion_albums(otro.colecion_albums), recibidos(otro.recibidos){}
 
 usuario::~usuario() {}
 
@@ -68,6 +68,9 @@ bool usuario::setInscripcion(const fecha _inscripcion)
 }
 void usuario::setAlbums(const lista<album>& _albums)
 {colecion_albums = _albums;}
+void usuario::setRecibidos(const lista<mensaje>& _recibidos)
+{recibidos = _recibidos;}
+
 //get()
 const string& usuario::getNombre() const { return nombre; }
 const string& usuario::getClave() const { return clave; }
@@ -78,7 +81,10 @@ fecha usuario::getNacimiento() const { return nacimiento; }
 fecha usuario::getInscripcion() const { return inscripcion; }
 lista<album>& usuario::getAlbums() {return colecion_albums;}
 const lista<album>& usuario::getAlbums() const {return colecion_albums;}
+lista<mensaje>& usuario::getRecibidos() {return recibidos;}
+const lista<mensaje>& usuario::getRecibidos() const {return recibidos;}
 int usuario::cantidadAlbums() const {return colecion_albums.tamanio();}
+int usuario::cantidadRecibidos() const {return recibidos.tamanio();}
 //funciones
 bool usuario:: validarClave(const string& _clave) const
 {
@@ -93,6 +99,8 @@ string usuario::rutaAlbum(const string& subruta) const
 {
     return subruta + "/" + nombre + "/albums";
 }
+void usuario::recibirMensaje(const mensaje& m)
+{recibidos.agregarAlFinal(m);}
 unsigned long usuario::memoriaUsuario() const
 {
     unsigned long total = sizeof(usuario);
@@ -111,6 +119,9 @@ unsigned long usuario::memoriaUsuario() const
     unsigned long basura = 0;
     for (int i = 0; i < colecion_albums.tamanio(); i++)
         total += colecion_albums.en(i, basura).memoriaAlbum() - sizeof(album);
+    total += recibidos.memoria();
+    for (int i = 0; i < recibidos.tamanio(); i++)
+        total += recibidos.en(i, basura).memoriaMensaje() - sizeof(mensaje);
     return total;
 }
 //operadores
@@ -120,6 +131,7 @@ usuario& usuario::operator=(const usuario& otro)
         nombre = otro.nombre; clave = otro.clave; correo = otro.correo;
         ciudad = otro.ciudad; pais = otro.pais;
         nacimiento = otro.nacimiento; inscripcion = otro.inscripcion;
+        recibidos = otro.recibidos;
     }
     return *this;
 }

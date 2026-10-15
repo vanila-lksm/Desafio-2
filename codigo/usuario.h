@@ -2,6 +2,7 @@
 #define USUARIO_H
 #include "album.h"
 #include "fecha.h"
+#include "mensaje.h"
 #include <iostream>
 using namespace std;
 class usuario
@@ -15,6 +16,7 @@ private:
     fecha nacimiento;
     fecha inscripcion;
     lista<album> colecion_albums;
+    lista<mensaje> recibidos;
 public:
     usuario();
     usuario(const string& _nombre, const string& _clave, const string& _correo,
@@ -30,6 +32,7 @@ public:
     bool setNacimiento(const fecha _nac);
     bool setInscripcion(const fecha _inscrip);
     void setAlbums(const lista<album>& _albums);
+    void setRecibidos(const lista<mensaje>& _recibidos);
     //get()
     const string& getNombre() const;
     const string& getClave() const;
@@ -40,11 +43,15 @@ public:
     fecha getInscripcion()const;
     lista<album>& getAlbums();
     const lista<album>& getAlbums() const;
+    lista<mensaje>& getRecibidos();
+    const lista<mensaje>& getRecibidos() const;
     int cantidadAlbums() const;
+    int cantidadRecibidos() const;
     //funciones
     bool validarClave(const string& _clave);
     string r_fotoPerfil(const string& subruta) const;
     string rutaAlbum(const string& subruta) const;
+    void recibirMensaje(const mensaje& m);
     unsigned long memoriaUsuario()const;
     //operadores
     usuario& operator=(const usuario& otro);
