@@ -101,6 +101,8 @@ string usuario::rutaAlbum(const string& subruta) const
 }
 void usuario::recibirMensaje(const mensaje& m)
 {recibidos.agregarAlFinal(m);}
+void usuario::agregarAlbum(const album& a)
+{colecion_albums.agregarAlFinal(a);}
 unsigned long usuario::memoriaUsuario() const
 {
     unsigned long total = sizeof(usuario);

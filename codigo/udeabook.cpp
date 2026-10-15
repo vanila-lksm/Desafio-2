@@ -62,8 +62,11 @@ int udeaBook::getAmigosImpReservados() const { return amigos_imp_reservados; }
 //funciones
 void udeaBook::limpiarCampo(string& campo)
 {
-    if(!campo.empty() && campo[campo.size()-1]=='\r')
-        campo.erase(campo.size()-1);
+    if(!campo.empty())
+    {
+        if(campo[campo.size()-1]=='\r' || campo[campo.size()-1]=='\n')
+            campo.erase(campo.size()-1);
+    }
 }
 
 void udeaBook::impAmigos(unsigned long int& iteraciones)
@@ -155,7 +158,8 @@ void udeaBook::buscarPorIndices(const int* indices, int cantidad,
     int n = usuarios.tamanio();
     int encontrados = 0;
 
-    for (int k = 0; k < n && encontrados < cantidad; k++) {
+    for (int k = 0; k < n && encontrados < cantidad; k++)
+    {
         iteraciones++;
         for (int t = 0; t < cantidad; t++)
         {
@@ -168,6 +172,17 @@ void udeaBook::buscarPorIndices(const int* indices, int cantidad,
             }
         }
     }
+}
+int udeaBook::b_inidicePorNombre(const string& nombre, unsigned long int& iteraciones) const
+{
+    int n = usuarios.tamanio();
+    for (int k = 0; k < n; k++)
+    {
+        iteraciones++;
+        if (usuarios.en(k, iteraciones).getNombre() == nombre)
+            return k;
+    }
+    return -1;
 }
 void udeaBook::impRutasPerfil(const int* indices, int cantidad,
                               unsigned long int& iteraciones)
@@ -205,7 +220,42 @@ unsigned long udeaBook::memoriaUdeaBook() const
         total += usuarios.en(i, basura).memoriaUsuario() - sizeof(usuario);
     return total;
 }
+bool udeaBook::enviar_solicitud(const string& nombre, unsigned long int& iteraciones)
+{
+    int j=b_inidicePorNombre(nombre,iteraciones);
+    if(j<0)
+    {
+        cout<<"este usuario no existe crark"<<endl;
+        return false;
+    }
+    if (j == usuario_actual)
+    {
+        cout << "No te puedes auto solicitar amistad :(" << endl;
+        return false;
+    }
 
+    bool su_marca = amistades.getMarca(j, usuario_actual);
+    bool mi_marca  = amistades.getMarca(usuario_actual, j);
+
+    if (mi_marca && su_marca)
+    {
+        cout << "Ya son amigos." << endl;
+        return false;
+    }
+    if (su_marca)
+    {
+        cout << "Ya le envio una solicitud a " << nombre << "." << endl;
+        return false;
+    }
+    if (mi_marca)
+    {
+        cout << nombre << " ya le envio una solicitud a usted. Aceptela." << endl;
+        return false;
+    }
+    amistades.setMarca(j, usuario_actual, true);
+    cout << "Solicitud enviada a " << nombre << endl;
+    return true;
+}
 //cargar()
 bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iteraciones)
 {
@@ -265,6 +315,127 @@ bool udeaBook::cargarRelaciones_txt(const string& ruta,unsigned long int& iterac
     return true;
 }
 
+bool udeaBook:: cargarMensajes_txt(const string& ruta, unsigned long int& iteraciones)
+{
+    ifstream archivo(ruta.c_str());
+    if (!archivo.is_open())
+        return false;
+
+    string campo, texto;
+
+    while (getline(archivo, campo, ';'))
+    {
+        iteraciones++;
+        limpiarCampo(campo);
+        if (campo.empty())
+            break;
+        int receptor = stoi(campo);
+
+        if (!getline(archivo, campo, ';'))
+            return false;
+        int emisor = stoi(campo);
+
+        if (!getline(archivo, campo, ';'))
+            return false;
+        fecha envio;
+        if (!envio.desdeTexto(campo, iteraciones))
+            return false;
+
+        if (!getline(archivo, campo, ';'))
+            return false;
+        bool leido = (campo == "1");
+
+        if (!getline(archivo, texto))
+            return false;
+        limpiarCampo(texto);
+
+        if (receptor < 0 || receptor >= usuarios.tamanio())
+            return false;
+        if (emisor < 0 || emisor >= usuarios.tamanio())
+            return false;
+
+        mensaje m;
+        if (!m.setTexto(texto))
+            return false;
+        m.setEnvio(envio);
+        m.setEmisor(emisor);
+        m.setLeido(leido);
+
+        usuarios.en(receptor, iteraciones).recibirMensaje(m);
+    }
+    return true;
+}
+bool udeaBook::cargarAlbums_txt(const string& ruta, unsigned long int& iteraciones)
+{
+    ifstream archivo(ruta.c_str());
+    if (!archivo.is_open())
+        return false;
+
+    int indiceDueno = -1;
+    int indiceAlbum = -1;
+    string campo;
+
+    while (getline(archivo, campo, ';'))
+    {
+        iteraciones++;
+        limpiarCampo(campo);
+        if (campo.empty())
+            break;
+        //aqui se guarda el album
+        if (campo == "A")
+        {
+            if (!getline(archivo, campo, ';'))
+                return false;
+            indiceDueno = stoi(campo);
+            if (indiceDueno < 0 || indiceDueno >= usuarios.tamanio())
+                return false;
+            string nombre;
+            if (!getline(archivo, nombre, ';'))
+                return false;
+
+            if (!getline(archivo, campo))
+                return false;
+            limpiarCampo(campo);
+            if (campo.empty())
+                return false;
+            album a;
+            if (!a.setNombre(nombre))
+                return false;
+            if (!a.setPrivacidad(campo[0]))
+                return false;
+            usuario& u = usuarios.en(indiceDueno, iteraciones);
+            u.agregarAlbum(a);
+            indiceAlbum = u.getAlbums().tamanio() - 1;
+        }
+        //aqui se guardan las fotos del album anterior
+        else if (campo == "F")
+        {
+            if (indiceDueno < 0 || indiceAlbum < 0)
+                return false;
+            string nombre;
+            if (!getline(archivo, nombre, ';'))
+                return false;
+            if (!getline(archivo, campo, ';'))
+                return false;
+            fecha captura;
+            if (!captura.desdeTexto(campo, iteraciones))
+                return false;
+            if (!getline(archivo, campo, ';'))
+                return false;
+            int tamanio = stoi(campo);
+            if (!getline(archivo, campo))
+                return false;
+            limpiarCampo(campo);
+            int likes = stoi(campo);
+            foto f(nombre, captura, likes, tamanio);
+            usuario& u = usuarios.en(indiceDueno, iteraciones);
+            u.getAlbums().en(indiceAlbum, iteraciones).agregarfoto(f);
+        }
+        else
+            return false;                           // marcador desconocido
+    }
+    return true;
+}
 //guardar()
 bool udeaBook::guardarUsuarios_txt(const string& ruta, unsigned long int& iteraciones) const
 {
@@ -307,7 +478,52 @@ bool udeaBook::guardarRelaciones_txt(const string& ruta, unsigned long int& iter
     }
     return true;
 }
+bool udeaBook::guardarMensajes_txt(const string& ruta, unsigned long int& iteraciones) const
+{
+    ofstream archivo(ruta.c_str());
+    if (!archivo.is_open())
+        return false;
+    int n = usuarios.tamanio();
+    for (int i = 0; i < n; i++)
+    {
+        iteraciones++;
+        const lista<mensaje>& recibidos = usuarios.en(i, iteraciones).getRecibidos();
 
+        for (int m = 0; m < recibidos.tamanio(); m++)
+        {
+            iteraciones++;
+            archivo << i << ';' << recibidos.en(m, iteraciones) << '\n';
+        }
+    }
+    return true;
+}
+bool udeaBook::guardarAlbums_txt(const string& ruta, unsigned long int& iteraciones) const
+{
+    ofstream archivo(ruta.c_str());
+    if(archivo.is_open())
+        return false;
+    int n = usuarios.tamanio();
+    for (int i = 0; i < n; i++)
+    {
+        iteraciones++;
+        const lista<album>& albumes = usuarios.en(i, iteraciones).getAlbums();
+
+        for (int a = 0; a < albumes.tamanio(); a++)
+        {
+            iteraciones++;
+            const album& al = albumes.en(a, iteraciones);
+            archivo << "A;" << i << ';' << al << '\n';
+
+            const lista<foto>& fotos = al.getcoleccionfotos();
+            for (int f = 0; f < fotos.tamanio(); f++)
+            {
+                iteraciones++;
+                archivo << "F;" << fotos.en(f, iteraciones) << '\n';
+            }
+        }
+    }
+    return true;
+}
 //operadores
 udeaBook& udeaBook::operator=(const udeaBook& otro)
 {

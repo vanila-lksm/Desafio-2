@@ -39,14 +39,21 @@ public:
     void impAmigos(unsigned long int& iteraciones);
     void buscarPorIndices(const int* indices, int cantidad,
                         const usuario** salida, unsigned long int& iteraciones);
+    int b_inidicePorNombre(const string& nombre, unsigned long int& iteraciones)const;
     void impRutasPerfil(const int* indices,int cantidad,unsigned long int& iteraciones);
     unsigned long memoriaUdeaBook() const;
+    bool enviar_solicitud(const string& nombre, unsigned long int& iteraciones);
+    int mostrar_solicitudes(unsigned long int& iteraciones)const;
     //cargar()
     bool cargarUsuarios_txt(const string& ruta,unsigned long int& iteraciones);
     bool cargarRelaciones_txt(const string& ruta, unsigned long int& iteraciones);
+    bool cargarMensajes_txt(const string& ruta, unsigned long int&iteraciones);
+    bool cargarAlbums_txt(const string& ruta, unsigned long int& iteraciones);
     //guardar()
     bool guardarUsuarios_txt(const string& ruta, unsigned long int& iteraciones) const;
     bool guardarRelaciones_txt(const string& ruta, unsigned long int& iteraciones) const;
+    bool guardarMensajes_txt(const string& ruta, unsigned long int& iteraciones) const;
+    bool guardarAlbums_txt(const string& ruta, unsigned long int& iteraciones) const;
     //operadores
     udeaBook& operator=(const udeaBook& otro);
     bool operator==(const udeaBook& otro) const;

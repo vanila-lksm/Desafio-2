@@ -52,6 +52,7 @@ public:
     string r_fotoPerfil(const string& subruta) const;
     string rutaAlbum(const string& subruta) const;
     void recibirMensaje(const mensaje& m);
+    void agregarAlbum(const album& a);
     unsigned long memoriaUsuario()const;
     //operadores
     usuario& operator=(const usuario& otro);
