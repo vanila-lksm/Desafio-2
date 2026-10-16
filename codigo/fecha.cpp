@@ -168,9 +168,9 @@ ostream& operator<<(ostream& os,const fecha f)
 {
     os << f.getAnio() << '-';
     if (f.getMes() < 10) os << '0';
-    os << f.getMes() << '-';
+    os << static_cast<int>(f.getMes()) << '-';
     if (f.getDia() < 10) os << '0';
-    os << f.getDia();
+    os << static_cast<int>(f.getDia());
     return os;
 }
 

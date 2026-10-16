@@ -95,7 +95,6 @@ unsigned long relaciones::memoriaRelaciones() const
     total += (unsigned long)cantidad_usuarios * getEspaciosFila() * sizeof(unsigned long long);
     return total;
 }
-//operadores
 relaciones& relaciones::operator=(const relaciones& otra)
 {
     if(this != &otra)

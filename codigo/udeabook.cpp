@@ -2,20 +2,10 @@
 #include <fstream>
 #include <random>
 const string udeaBook::subruta = "/users/udeabook2026";
-udeaBook::udeaBook() : amigos_imp_reservados(0),usuario_actual(-1)
-{
-    amigos_imp[0] = -1;
-    amigos_imp[1] = -1;
-    amigos_imp[2] = -1;
-}
-udeaBook::udeaBook(const udeaBook& otro)
-    : amistades(otro.amistades), usuarios(otro.usuarios),
-    amigos_imp_reservados(otro.amigos_imp_reservados)
-{
-    amigos_imp[0] = otro.amigos_imp[0];
-    amigos_imp[1] = otro.amigos_imp[1];
-    amigos_imp[2] = otro.amigos_imp[2];
-}
+udeaBook::udeaBook() : usuario_actual(-1){}
+
+udeaBook::udeaBook(const udeaBook& otro): amistades(otro.amistades), usuarios(otro.usuarios),usuario_actual(otro.usuario_actual){}
+
 udeaBook::~udeaBook() {}
 
 //set()
@@ -36,29 +26,13 @@ bool udeaBook::setUsuarioActual(int _usuario_actual)
     return true;
 }
 
-bool udeaBook::setAmigosImp(const int* _amigos, int cantidad)
-{
-    if (_amigos == 0 || cantidad < 0 || cantidad > 3)
-        return false;
-    for (int i = 0; i < cantidad; i++)
-        amigos_imp[i] = _amigos[i];
-    amigos_imp_reservados = cantidad;
-    return true;
-}
+
 //get()
 const relaciones& udeaBook::getAmistades() const { return amistades; }
 relaciones& udeaBook::getAmistades() { return amistades; }
 const lista<usuario>& udeaBook::getUsuarios() const { return usuarios; }
 lista<usuario>& udeaBook::getUsuarios() { return usuarios; }
 int udeaBook::getUsuarioActual() const { return usuario_actual; }
-int udeaBook::getAmigosImp(int posicion) const
-{
-    if (posicion < 0 || posicion >= amigos_imp_reservados)
-        return -1;
-    return amigos_imp[posicion];
-}
-int udeaBook::getAmigosImpReservados() const { return amigos_imp_reservados; }
-
 //funciones
 void udeaBook::limpiarCampo(string& campo)
 {
@@ -67,83 +41,6 @@ void udeaBook::limpiarCampo(string& campo)
         if(campo[campo.size()-1]=='\r' || campo[campo.size()-1]=='\n')
             campo.erase(campo.size()-1);
     }
-}
-
-void udeaBook::impAmigos(unsigned long int& iteraciones)
-{
-    amigos_imp_reservados=0;
-    int c_u=amistades.getCantidad_usuarios(),amigos=0;
-    for(int j=0; j<c_u;j++)
-    {
-        iteraciones++;
-        if( amistades.getMarca(usuario_actual,j) && amistades.getMarca(j,usuario_actual))
-            amigos++;
-    }
-    if(amigos==0)
-    {
-        cout<<"en este momento no tienes amigos para imprimir"<<endl;
-        return;
-    }
-    int* indice_amigos=new int[amigos];
-    int* prob_amigos=new int[amigos];
-    int k=0;
-    for (int j = 0; j < c_u && k < amigos; j++)
-    {
-        iteraciones++;
-        if (amistades.getMarca(usuario_actual, j) && amistades.getMarca(j, usuario_actual))
-        {
-            int comunes = amistades.amigosEnComun(usuario_actual, j, iteraciones);
-            indice_amigos[k] = j;
-            if (comunes <= 10)
-                prob_amigos[k] = 10;
-            else if (comunes <= 20)
-                prob_amigos[k] = 25;
-            else
-                prob_amigos[k] = 35;
-            k++;
-        }
-    }
-    amigos=k;
-    mt19937 generador(random_device{}());
-    short int cuantos=(amigos<6)?amigos:6;
-    int primeros[3];
-    short int c_primeros=0;
-
-    int total=0;
-    for(int i=0;i<amigos;i++)
-    {
-        iteraciones++;
-        total+=prob_amigos[i];
-    }
-    int disponibles=amigos;
-
-    for(short int e=0;e<cuantos;e++)
-    {
-        iteraciones++;
-        uniform_int_distribution<int>dist(0,total-1);
-        int r=dist(generador);
-        int acumulado=0,sel=0;
-        for(int i=0;i<disponibles;i++)
-        {
-            iteraciones++;
-            acumulado+=prob_amigos[i];
-            if(r<acumulado)
-            {
-                sel=i;break;
-            }
-        }
-        if(e<3)
-            primeros[c_primeros++]=indice_amigos[sel];
-        else
-            amigos_imp[amigos_imp_reservados++]=indice_amigos[sel];
-        total-=prob_amigos[sel];
-        indice_amigos[sel]=indice_amigos[disponibles-1];
-        prob_amigos[sel]=prob_amigos[disponibles-1];
-        disponibles--;
-    }
-    delete[]indice_amigos;
-    delete[]prob_amigos;
-    impRutasPerfil(primeros,c_primeros,iteraciones);
 }
 
 void udeaBook::buscarPorIndices(const int* indices, int cantidad,
@@ -184,25 +81,7 @@ int udeaBook::b_inidicePorNombre(const string& nombre, unsigned long int& iterac
     }
     return -1;
 }
-void udeaBook::impRutasPerfil(const int* indices, int cantidad,
-                              unsigned long int& iteraciones)
-{
-    if (cantidad <= 0)
-        return;
 
-    const usuario** encontrados = new const usuario*[cantidad];
-    buscarPorIndices(indices, cantidad, encontrados, iteraciones);
-
-    for (int t = 0; t < cantidad; t++)
-    {
-        iteraciones++;
-        if (encontrados[t] != 0) {
-            cout << encontrados[t]->getNombre() << endl;
-            cout << "   " << encontrados[t]->r_fotoPerfil(subruta) << endl;
-        }
-    }
-    delete[] encontrados;
-}
 unsigned long udeaBook::memoriaUdeaBook() const
 {
     unsigned long total = sizeof(udeaBook);
@@ -412,6 +291,182 @@ string udeaBook::leerTexto(const string& mensaje, bool obligatorio)
         cout << "no puede estar vacio" << endl;
     }
 }
+int udeaBook::calcAmigos(int* indices, unsigned long int& iteraciones)
+{
+    if (indices == 0 || usuario_actual < 0)
+        return 0;
+
+    int c_u = amistades.getCantidad_usuarios();
+    int amigos = 0;
+    for (int j = 0; j < c_u; j++)
+    {
+        iteraciones++;
+        if (j != usuario_actual &&
+            amistades.getMarca(usuario_actual, j) &&
+            amistades.getMarca(j, usuario_actual))
+            amigos++;
+    }
+
+    if (amigos == 0)
+        return 0;
+    int* ind = new int[amigos];
+    int* prob = new int[amigos];
+    int  k = 0;
+    int  total = 0;
+
+    for (int j = 0; j < c_u && k < amigos; j++)
+    {
+        iteraciones++;
+        if (j != usuario_actual &&
+            amistades.getMarca(usuario_actual, j) &&
+            amistades.getMarca(j, usuario_actual))
+        {
+            int comunes = amistades.amigosEnComun(usuario_actual, j, iteraciones);
+
+            if (comunes <= 10)
+                {prob[k] = 10;}
+            else if (comunes <= 20)
+                {prob[k] = 25;}
+            else
+                {prob[k] = 35;}
+            ind[k] = j;
+            total += prob[k];
+            k++;
+        }
+    }
+
+    //ruleta del gamblin
+    int cuantos = (amigos < 6) ? amigos : 6;
+    mt19937 generador(random_device{}());
+    for (int s = 0; s < cuantos; s++)
+    {
+        iteraciones++;
+        uniform_int_distribution<int> dado(1, total);
+        int tiro = dado(generador);
+        int acumulado = 0;
+        int sel = s;
+        for (int t = s; t < amigos; t++)
+        {
+            iteraciones++;
+            acumulado += prob[t];
+            if (acumulado >= tiro)
+                { sel = t; break; }
+        }
+
+        int ti = ind[s]; ind[s] = ind[sel]; ind[sel] = ti;
+        int tp = prob[s]; prob[s] = prob[sel]; prob[sel] = tp;
+
+        indices[s] = ind[s];
+        total -= prob[s];
+    }
+    delete[] ind;
+    delete[] prob;
+
+    return cuantos;
+}
+void udeaBook::impAmigos(const usuario** amigos, int cantidad, int desde) const
+{
+    cout << "mejores amigos:" << endl;
+
+    if (amigos == 0 || cantidad <= 0)
+    {
+        cout << "  (aun no tiene amigos)" << endl;
+        return;
+    }
+
+    if (desde < 0)         desde = 0;
+    if (desde >= cantidad) return;
+
+    int fin = desde + AMIGOS_POR_PAG;
+    if (fin > cantidad) fin = cantidad;
+
+    for (int s = desde; s < fin; s++)
+    {
+        if (amigos[s] != 0)
+            cout << "  " << amigos[s]->r_fotoPerfil(subruta) << endl;
+    }
+}
+void udeaBook::buscarMensajesPorFecha(const fecha& inicio, const fecha& fin, unsigned long int& iteraciones)
+{
+    if (usuario_actual < 0 || usuario_actual >= usuarios.tamanio()) {
+        cout << "Error: No hay un usuario logueado." << endl;
+        return;
+    }
+    usuario& u = usuarios.en(usuario_actual, iteraciones);
+    lista<mensaje>& misMensajes = u.getRecibidos();
+    int n = misMensajes.tamanio();
+    int encontrados = 0;
+    cout << "--- mensajes entre " << inicio << " y " << fin << " ---" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        iteraciones++;
+        mensaje& m = misMensajes.en(i, iteraciones);
+        fecha f = m.getFecha_envio();
+        if (f >= inicio && f <= fin)
+        {
+            m.setleido(true);
+            const usuario& emisor = usuarios.en(m.getEmisor(), iteraciones);
+            cout << "De: " << emisor.getNombre() << " " << m.getFecha_envio() << endl;
+            cout << m.getTexto() << endl << endl;
+            encontrados++;
+        }
+        else if (!(f <= fin)) {
+            break;
+        }
+    }
+
+    if (encontrados == 0) {
+        cout << "No se encontraron mensajes en este rango de fechas." << endl;
+    }
+}
+
+void udeaBook::buscarMensajesNoLeidos(unsigned long int& iteraciones)
+{
+    if (usuario_actual < 0 || usuario_actual >= usuarios.tamanio()) {
+        return;
+    }
+    usuario& u = usuarios.en(usuario_actual, iteraciones);
+    lista<mensaje>& misMensajes = u.getRecibidos();
+    int n = misMensajes.tamanio();
+    int encontrados = 0;
+    cout << "--- Mensajes No Leidos ---" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        iteraciones++;
+        mensaje& m = misMensajes.en(i, iteraciones);
+        if (!m.getleido())
+        {
+            m.setleido(true);
+            const usuario& emisor = usuarios.en(m.getEmisor(), iteraciones);
+            cout << "De: " << emisor.getNombre() << " " << m.getFecha_envio() << endl;
+            cout << m.getTexto() << endl << endl;
+            encontrados++;
+        }
+    }
+    if (encontrados == 0) {
+        cout << "No tienes mensajes nuevos por leer." << endl;
+    }
+}
+bool udeaBook::enviarMensaje(int indice_receptor, const string& texto, unsigned long int& iteraciones)
+{
+    if (usuario_actual < 0)
+    {cout << "debe iniciar sesion" << endl; return false;}
+    if (indice_receptor < 0 || indice_receptor >= usuarios.tamanio())
+    {cout << "el usuario receptor no existe" << endl; return false;}
+    if (indice_receptor == usuario_actual)
+    { cout << "no se puede enviar un mensaje a usted mismo" << endl; return false;}
+    mensaje m;
+    if (!m.setTexto(texto))
+    { cout << "mensaje invalido: pasa de 512 caracteres o contiene ';'" << endl; return false;}
+
+    m.setEmisor(usuario_actual);
+    m.setFecha_envio(fecha::fechaHoy(iteraciones));
+    m.setleido(false);
+
+    usuarios.en(indice_receptor, iteraciones).recibirMensaje(m);
+    cout << "mensaje enviado" << endl;
+    return true;
+}
 //cargar()
 bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iteraciones)
 {
@@ -448,7 +503,48 @@ bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iterac
     }
     return true;
 }
-
+int udeaBook::recomendaciones_amistades(int k,int* indices,unsigned long int& iteraciones)
+{
+    if (indices == 0 || usuario_actual < 0)
+        return 0;
+    if (k < 1 || k > 20)
+    {
+        cout << "la cantidad debe estar entre 1 y 20" << endl;
+        return 0;
+    }
+    int comunes[20];
+    int c_u = amistades.getCantidad_usuarios();
+    int cuantos = 0;
+    for (int j = 0; j < c_u; j++)
+    {
+        iteraciones++;
+        if (j == usuario_actual)
+            continue;
+        if (amistades.getMarca(usuario_actual, j) &&
+            amistades.getMarca(j, usuario_actual))
+            continue;
+        int enComun = amistades.amigosEnComun(usuario_actual, j, iteraciones);
+        if (enComun == 0)
+            continue;
+        //aqui hacemos la organizacion
+        if (cuantos < k || enComun > comunes[cuantos - 1])
+        {
+            int pos = (cuantos < k) ? cuantos : k - 1;
+            while (pos > 0 && comunes[pos - 1] < enComun)
+            {
+                iteraciones++;
+                comunes[pos] = comunes[pos - 1];
+                indices[pos] = indices[pos - 1];
+                pos--;
+            }
+            comunes[pos] = enComun;
+            indices[pos] = j;
+            if (cuantos < k)
+                cuantos++;
+        }
+    }
+    return cuantos;
+}
 bool udeaBook::cargarRelaciones_txt(const string& ruta,unsigned long int& iteraciones)
 {
     ifstream archivo(ruta.c_str());
@@ -459,6 +555,9 @@ bool udeaBook::cargarRelaciones_txt(const string& ruta,unsigned long int& iterac
     while(getline(archivo,campo,';'))
     {
         iteraciones++;
+        limpiarCampo(campo);
+        if(campo.empty())
+            break;
         int i=stoi(campo);
         if(!getline(archivo,campo))
             return false;
@@ -513,9 +612,9 @@ bool udeaBook:: cargarMensajes_txt(const string& ruta, unsigned long int& iterac
         mensaje m;
         if (!m.setTexto(texto))
             return false;
-        m.setEnvio(envio);
+        m.setFecha_envio(envio);
         m.setEmisor(emisor);
-        m.setLeido(leido);
+        m.setleido(leido);
 
         usuarios.en(receptor, iteraciones).recibirMensaje(m);
     }
@@ -585,7 +684,7 @@ bool udeaBook::cargarAlbums_txt(const string& ruta, unsigned long int& iteracion
             int likes = stoi(campo);
             foto f(nombre, captura, likes, tamanio);
             usuario& u = usuarios.en(indiceDueno, iteraciones);
-            u.getAlbums().en(indiceAlbum, iteraciones).agregarfoto(f);
+            u.getAlbums().en(indiceAlbum, iteraciones).agregarFoto(f);
         }
         else
             return false;                           // marcador desconocido
@@ -687,9 +786,6 @@ udeaBook& udeaBook::operator=(const udeaBook& otro)
         amistades = otro.amistades;
         usuarios = otro.usuarios;
         usuario_actual = otro.usuario_actual;
-        amigos_imp_reservados = otro.amigos_imp_reservados;
-        for (int i = 0; i < 3; i++)
-            amigos_imp[i] = otro.amigos_imp[i];
     }
     return *this;
 }
@@ -698,10 +794,211 @@ bool udeaBook::operator==(const udeaBook& otro) const
     return usuarios == otro.usuarios && amistades == otro.amistades;
 }
 
+//aqui las cositas del main
+bool udeaBook::iniciarSesion(unsigned long int& iteraciones)
+{
+    bool sesionActiva= false;
 
+    while (!sesionActiva)
+    {
+        cout << endl;
+        cout << "--- inicio de sesion ---" << endl;
 
+        string nombre = leerTexto("usuario (vacio para salir): ", false);
+        if (nombre.empty()) return false;
 
+        int j = b_inidicePorNombre(nombre, iteraciones);
 
+        if (j < 0)
+        {
+            cout << "ese usuario no existe" << endl;
+        }
+        else
+        {
+            string clave = leerTexto("clave: ", true);
 
+            if (!usuarios.en(j, iteraciones).validarClave(clave))
+            {
+                cout << "clave incorrecta" << endl;
+            }
+            else
+            {
+                setUsuarioActual(j);
+                cout << "bienvenido " << nombre << endl;
+                sesionActiva = true;
+            }
+        }
+    }
+    return true;
+}
+void udeaBook::reportarEficiencia(unsigned long int& iteraciones)
+{
+    cout<<endl;
+    cout<<"---reporte---"<<endl;
+    cout << "iteraciones: " << iteraciones << endl;
+    cout << "memoria: " << memoriaUdeaBook() << " bytes" << endl;
+    iteraciones=0;
+}
+bool udeaBook::recargarAmigos(int& desde, int cantidad) const
+{
+    if (desde != 0)
+        return false;  // ya recargo
+    if (cantidad <= AMIGOS_POR_PAG)
+        return false;  // no hay mas que mostrar
+    desde = AMIGOS_POR_PAG;
+    return true;
+}
+bool udeaBook::cargarTodo(unsigned long int&iteraciones)
+{
+    if (!cargarUsuarios_txt("usuarios.txt", iteraciones))
+    {cout << "error al cargar usuarios.txt" << endl; return 1;}
+    if (!cargarRelaciones_txt("relaciones.txt", iteraciones))
+    {cout << "error al cargar relaciones.txt" << endl; return 1;}
+    if (!cargarAlbums_txt("albumes.txt", iteraciones))
+    { cout << "error al cargar albumes.txt" << endl; return 1;}
+    if (!cargarMensajes_txt("mensajes.txt", iteraciones))
+    { cout << "error al cargar mensajes.txt" << endl; return 1; }
+    reportarEficiencia(iteraciones);
+    return 0;
+}
 
+void udeaBook::guardarTodo(unsigned long int& iteraciones)
+{
+    if (!guardarUsuarios_txt("usuarios.txt", iteraciones))
+        cout << "error al guardar usuarios.txt" << endl;
+    if (!guardarRelaciones_txt("relaciones.txt", iteraciones))
+        cout << "error al guardar relaciones.txt" << endl;
+    if (!guardarAlbums_txt("albumes.txt", iteraciones))
+        cout << "error al guardar albumes.txt" << endl;
+    if (!guardarMensajes_txt("mensajes.txt", iteraciones))
+        cout << "error al guardar mensajes.txt" << endl;
+    reportarEficiencia(iteraciones);
+    cout<<"+ ejecucion de libreria fstream"<<endl;
+}
+void udeaBook:: decision2(unsigned long int& iteraciones,short int decision)
+{
+    short int contador=0;
+    while(decision!=9)
+    {
+        cout<<"--- amistades ---"<<endl;
+        cout<<"1. enviar solicitud"<<endl;
+        cout<<"2. ver y aceptar solicitudes"<<endl;
+        cout<<"3. visitar el perfil de un usuario"<<endl;
+        cout<<"9. volver"<<endl;
+        decision=leerEntero("opcion: ");
+        if(decision==1)
+        {
+            string nombre=leerTexto("nombre del usuario: ",true);
+            enviar_solicitud(nombre,iteraciones);
+            contador++;
+            reportarEficiencia(iteraciones);
+        }
+        else if(decision==2)
+        {
+            if(mostrar_solicitudes(iteraciones)>0)
+            {
+                int quien=leerEntero("identificador del usuario (-1 para ninguno): ");
+                if(quien>=0)
+                {
+                    aceptar_solicitudes(quien);
+                    contador++;
+                }
+            }
+            reportarEficiencia(iteraciones);
+        }
+        else if(decision!=9){cout<<"opcion no valida men"<<endl;}
+    }
+    if(contador>=5)
+    {
+        cout<<endl<<"---guardando relaciones.txt---"<<endl;
+        guardarRelaciones_txt("relaciones.txt",iteraciones);
+        reportarEficiencia(iteraciones);
+    }
+}
+void udeaBook::decision4(unsigned long int& iteraciones,short int decision)
+{
+    short int contador=0;
+    while (decision != 9)
+    {
+        iteraciones = 0;
 
+        cout << endl;
+        cout << "--- mensajes ---" << endl;
+        cout << "1. enviar mensaje" << endl;
+        cout << "2. ver mensajes no leidos" << endl;
+        cout << "3. buscar mensajes por rango de fechas" << endl;
+        cout << "9. volver" << endl;
+        decision=leerEntero("opcion: ");
+        if (decision == 1)
+        {
+            string nombre = leerTexto("para quien: ", true);
+            int j =b_inidicePorNombre(nombre, iteraciones);
+            if (j < 0)
+            {cout << "ese usuario no existe" << endl;}
+            else
+            {
+                string texto =leerTexto("mensaje: ", true);
+                enviarMensaje(j, texto, iteraciones);
+                contador+=3;
+            }
+            reportarEficiencia(iteraciones);
+            cout << "+ ejecucion de libreria chrono" << endl;
+        }
+        else if(decision==2)
+        {
+            buscarMensajesNoLeidos(iteraciones);
+            contador+=2;
+            reportarEficiencia(iteraciones);
+        }
+        else if(decision==3)
+        {
+            fecha desde,hasta;
+            string texto;
+            texto=leerTexto("desde (AAAA-MM-DD): ",true);
+            if (!desde.desdeTexto(texto, iteraciones))
+                cout << "fecha invalida" << endl;
+            else
+            {
+                texto = leerTexto("hasta (AAAA-MM-DD): ", true);
+                if (!hasta.desdeTexto(texto, iteraciones))
+                    {cout << "fecha invalida" << endl;}
+                else if (!(desde <= hasta))
+                    {cout << "la fecha final es anterior a la inicial" << endl;}
+                else
+                {
+                    buscarMensajesPorFecha(desde, hasta, iteraciones);
+                    contador++;
+                }
+            }
+            reportarEficiencia(iteraciones);
+        }
+        else if(decision!=9)
+            {cout<<"opcion no valida mon ami"<<endl;
+        }
+    }
+    if(contador>=5)
+    {
+        cout<<endl<<"---guardando mensajes.txt---"<<endl;
+        guardarMensajes_txt("mensajes.txt",iteraciones);
+        reportarEficiencia(iteraciones);
+    }
+}
+void udeaBook::decision5(unsigned long int& iteraciones)
+{
+    int indices[20];
+    const usuario* sug[20];
+    int k=leerEntero("cuantas sugerencias quiere ver? (1 a 20): ");
+    int cuantas=recomendaciones_amistades(k,indices,iteraciones);
+    if(cuantas==0)
+        {cout<<"no hay usuarios que podamos recomendarte"<<endl;}
+    else
+    {
+        buscarPorIndices(indices,cuantas,sug,iteraciones);
+        for(int i=0;i<cuantas;i++)
+        {
+            iteraciones++;
+            if(sug[i]!=0)
+                {cout<<"*** "<<sug[i]->getNombre()<<" ***"<<endl;}
+        }
+    }
+}
