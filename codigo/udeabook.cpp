@@ -198,7 +198,7 @@ void udeaBook::impRutasPerfil(const int* indices, int cantidad,
         iteraciones++;
         if (encontrados[t] != 0) {
             cout << encontrados[t]->getNombre() << endl;
-            cout << "   " << encontrados[t]->r_fotoPerfil("/users/udeaBook") << endl;
+            cout << "   " << encontrados[t]->r_fotoPerfil(subruta) << endl;
         }
     }
     delete[] encontrados;
@@ -255,6 +255,162 @@ bool udeaBook::enviar_solicitud(const string& nombre, unsigned long int& iteraci
     amistades.setMarca(j, usuario_actual, true);
     cout << "Solicitud enviada a " << nombre << endl;
     return true;
+}
+
+int udeaBook::mostrar_solicitudes(unsigned long int& iteraciones)const
+{
+    int c_u=usuarios.tamanio();
+    int cuantos=0;
+    for(int j=0;j<c_u;j++)
+    {
+        iteraciones++;
+        if(amistades.getMarca(usuario_actual,j) && !amistades.getMarca(j,usuario_actual))
+        {
+            cuantos++;
+            cout<<"identificador: "<<j<<". nombre: "<<usuarios.en(j,iteraciones).getNombre()<<endl;
+        }
+    }
+    if(cuantos==0)
+        cout<<"tranqui ya te llegaran las solicitudes ;)"<<endl;
+    return cuantos;
+}
+bool udeaBook::aceptar_solicitudes(const int j)
+{
+    if(j<0)
+    {
+        cout<<"este usuario no existe"<<endl;
+        return false;
+    }
+    if (!amistades.getMarca(usuario_actual, j) || amistades.getMarca(j, usuario_actual))
+    {
+        cout << "No hay una solicitud pendientes de este usuario" << endl;
+        return false;
+    }
+    amistades.setMarca(j, usuario_actual, true);
+    cout << "Ahora son amigos." << endl;
+    return true;
+}
+int udeaBook::mostrar_albums(const string& nombre,unsigned long int& iteraciones)
+{
+    if (usuario_actual < 0)
+    {
+        cout << "Debe iniciar sesion." << endl;
+        return -1;
+    }
+    int j = b_inidicePorNombre(nombre, iteraciones);
+    if (j < 0)
+    {
+        cout << "usuario ingresado no valido" << endl;
+        return -1;
+    }
+    bool esDueno = (j == usuario_actual);
+    bool esAmigo = amistades.getMarca(j, usuario_actual) &&
+                   amistades.getMarca(usuario_actual, j);
+    const lista<album>& al = usuarios.en(j, iteraciones).getAlbums();
+    int tam = al.tamanio();
+    int visibles = 0;
+    for (int i = 0; i < tam; i++)
+    {
+        iteraciones++;
+        const album& a = al.en(i, iteraciones);
+        if (a.visiblePara(esAmigo, esDueno))
+        {
+            visibles++;
+            cout << "identificador: " << i << ". nombre: " << a.getNombre() << endl;
+        }
+    }
+    if (visibles == 0)
+    {
+        cout << "no hay albums que usted pueda ver" << endl;
+        return -1;
+    }
+    return j;
+}
+void udeaBook::recorrer_album(int j,int i,unsigned long int& iteraciones)
+{
+    usuario& dueno = usuarios.en(j, iteraciones);
+    lista<album>& albums = dueno.getAlbums();
+    if (i < 0 || i >= albums.tamanio())
+    {
+        cout << "ese album no existe" << endl;
+        return;
+    }
+    album& elegido = albums.en(i, iteraciones);
+    bool esDueno = (j == usuario_actual);
+    bool esAmigo = amistades.getMarca(j, usuario_actual) &&
+                   amistades.getMarca(usuario_actual, j);
+    if (!elegido.visiblePara(esAmigo, esDueno))
+    {
+        cout << "ese album no esta disponible" << endl;
+        return;
+    }
+    lista<foto>& fotos = elegido.getColeccionFotos();
+    int tam = fotos.tamanio();
+    if (tam == 0)
+    {
+        cout << "ese album no tiene fotos" << endl;
+        return;
+    }
+
+    string rutaAlbum = subruta + "/" + dueno.getNombre() + "/albums/" + elegido.getNombre();
+    int actual = 0;
+    int opcion = 0;
+
+    while (opcion != 5)
+    {
+        iteraciones++;
+        foto& f = fotos.en(actual, iteraciones);
+        cout << endl;
+        cout << "foto " << (actual + 1) << " de " << tam << endl;
+        cout << f.rutaFoto(rutaAlbum) << endl;
+        cout << "capturada: " << f.getPublicada()
+             << "   " << f.getTamanio() << " KB"
+             << "   " << f.getLikes() << " likes" << endl;
+        cout << "1. siguiente  2. anterior  3. dar like  4. quitar like  5. salir" << endl;
+        opcion = leerEntero("opcion: ");
+        if (opcion == 1)
+            actual = (actual + 1) % tam;
+        else if (opcion == 2)
+            actual = (actual - 1 + tam) % tam;
+        else if (opcion == 3)
+        {
+            if (!f.darLike())
+                cout << "no se pudo dar like" << endl;
+        }
+        else if (opcion == 4)
+        {
+            if (!f.quitarLike())
+                cout << "la foto no tiene likes" << endl;
+        }
+        else if (opcion != 5)
+            cout << "opcion invalida" << endl;
+    }
+}
+int udeaBook::leerEntero(const string& mensaje)
+{
+    int valor;
+    cout << mensaje;
+    while (!(cin >> valor))
+    {
+        cin.clear();
+        cin.ignore(30000, '\n');
+        cout << "debe ingresar un numero: ";
+    }
+    cin.ignore(30000, '\n');
+    return valor;
+}
+string udeaBook::leerTexto(const string& mensaje, bool obligatorio)
+{
+    string texto;
+    while (true)
+    {
+        cout << mensaje;
+        getline(cin, texto);
+        limpiarCampo(texto);
+        if (!obligatorio || !texto.empty())
+            return texto;
+        cout << "no puede estar vacio" << endl;
+    }
 }
 //cargar()
 bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iteraciones)
@@ -447,7 +603,7 @@ bool udeaBook::guardarUsuarios_txt(const string& ruta, unsigned long int& iterac
     for(int i=0;i<n;i++)
     {
         iteraciones++;
-        //archivo<<usuarios.en(i,iteraciones)<<'\n';
+        archivo<<usuarios.en(i,iteraciones)<<'\n';
     }
     return true;
 }
@@ -500,7 +656,7 @@ bool udeaBook::guardarMensajes_txt(const string& ruta, unsigned long int& iterac
 bool udeaBook::guardarAlbums_txt(const string& ruta, unsigned long int& iteraciones) const
 {
     ofstream archivo(ruta.c_str());
-    if(archivo.is_open())
+    if(!archivo.is_open())
         return false;
     int n = usuarios.tamanio();
     for (int i = 0; i < n; i++)
@@ -514,7 +670,7 @@ bool udeaBook::guardarAlbums_txt(const string& ruta, unsigned long int& iteracio
             const album& al = albumes.en(a, iteraciones);
             archivo << "A;" << i << ';' << al << '\n';
 
-            const lista<foto>& fotos = al.getcoleccionfotos();
+            const lista<foto>& fotos = al.getColeccionFotos();
             for (int f = 0; f < fotos.tamanio(); f++)
             {
                 iteraciones++;

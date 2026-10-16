@@ -48,7 +48,7 @@ public:
     int cantidadAlbums() const;
     int cantidadRecibidos() const;
     //funciones
-    bool validarClave(const string& _clave);
+    bool validarClave(const string& _clave)const;
     string r_fotoPerfil(const string& subruta) const;
     string rutaAlbum(const string& subruta) const;
     void recibirMensaje(const mensaje& m);

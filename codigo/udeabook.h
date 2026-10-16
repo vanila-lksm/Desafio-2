@@ -44,6 +44,11 @@ public:
     unsigned long memoriaUdeaBook() const;
     bool enviar_solicitud(const string& nombre, unsigned long int& iteraciones);
     int mostrar_solicitudes(unsigned long int& iteraciones)const;
+    bool aceptar_solicitudes(const int j);
+    int mostrar_albums(const string& nombre,unsigned long int& iteraciones);
+    void recorrer_album(int j,int i,unsigned long int& iteraciones);
+    int leerEntero(const string& mensaje);
+    string leerTexto(const string& mensaje,bool vacio);
     //cargar()
     bool cargarUsuarios_txt(const string& ruta,unsigned long int& iteraciones);
     bool cargarRelaciones_txt(const string& ruta, unsigned long int& iteraciones);
