@@ -20,6 +20,8 @@ mensaje& mensaje::operator=(const mensaje& otra) {
     }
     return *this;
 }
+mensaje::mensaje(const mensaje& otra)
+    : texto(otra.texto), leido(otra.leido), fecha_envio(otra.fecha_envio), emisor(otra.emisor) {}
 bool mensaje::operator==(const mensaje& otra) const {
     return texto == otra.texto &&
            emisor == otra.emisor &&
@@ -55,4 +57,11 @@ std::ostream& operator<<(std::ostream& os, const mensaje& m) {
        << (m.getleido() ? 1 : 0) << ';' // Aquí garantizamos el 1 o 0
        << m.getTexto();
     return os;
+}
+unsigned long mensaje::memoriaMensaje() const {
+    unsigned long total = sizeof(mensaje);
+    if (texto.capacity() > 15) {
+        total += texto.capacity() + 1;
+    }
+    return total;
 }

@@ -274,9 +274,14 @@ bool udeaBook::enviar_solicitud(const string& nombre, unsigned long int& iteraci
             fecha f = m.getFecha_envio();
             if (f >= inicio && f <= fin)
             {
-                m.setleido();
-                cout << m << endl;
+                m.setleido(true);
+                const usuario& emisor = usuarios.en(m.getEmisor(), iteraciones);
+                cout << "De: " << emisor.getNombre() << " " << m.getFecha_envio() << endl;
+                cout << m.getTexto() << endl << endl;
                 encontrados++;
+            }
+           else if (!(f <= fin)) {
+                break;
             }
         }
 
@@ -301,16 +306,36 @@ bool udeaBook::enviar_solicitud(const string& nombre, unsigned long int& iteraci
             mensaje& m = misMensajes.en(i, iteraciones);
             if (!m.getleido())
             {
-                m.setleido();
-                cout << m << endl;
+                m.setleido(true);
+                const usuario& emisor = usuarios.en(m.getEmisor(), iteraciones);
+                cout << "De: " << emisor.getNombre() << " " << m.getFecha_envio() << endl;
+                cout << m.getTexto() << endl << endl;
                 encontrados++;
             }
         }
-
         if (encontrados == 0) {
             cout << "No tienes mensajes nuevos por leer." << endl;
         }
     }
+        bool udeaBook::enviarMensaje(int indice_receptor, const string& texto, const fecha& f, unsigned long int& iteraciones)
+        {
+            if (usuario_actual < 0 || usuario_actual >= usuarios.tamanio()) {
+                cout << "Error: No hay un usuario logueado para enviar el mensaje." << endl;
+                return false;
+            }
+            if (indice_receptor < 0 || indice_receptor >= usuarios.tamanio()) {
+                cout << "Error: El usuario receptor no existe." << endl;
+                return false;
+            }
+            mensaje m(texto, usuario_actual, f);
+            if (m.getTexto() == "[mensaje invalido]") {
+                cout << "Error: El mensaje es invalido (supera los 512 caracteres o contiene ';')." << endl;
+                return false;
+            }
+            usuarios.en(indice_receptor, iteraciones).recibirMensaje(m);
+            cout << "Mensaje enviado con exito." << endl;
+            return true;
+        }
 //cargar()
 bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iteraciones)
 {
@@ -482,7 +507,7 @@ bool udeaBook::cargarAlbums_txt(const string& ruta, unsigned long int& iteracion
             int likes = stoi(campo);
             foto f(nombre, captura, likes, tamanio);
             usuario& u = usuarios.en(indiceDueno, iteraciones);
-            u.getAlbums().en(indiceAlbum, iteraciones).agregarfoto(f);
+            u.getAlbums().en(indiceAlbum, iteraciones).agregarFoto(f);
         }
         else
             return false;                           // marcador desconocido
@@ -567,7 +592,7 @@ bool udeaBook::guardarAlbums_txt(const string& ruta, unsigned long int& iteracio
             const album& al = albumes.en(a, iteraciones);
             archivo << "A;" << i << ';' << al << '\n';
 
-            const lista<foto>& fotos = al.getcoleccionfotos();
+            const lista<foto>& fotos = al.getColeccionFotos();
             for (int f = 0; f < fotos.tamanio(); f++)
             {
                 iteraciones++;

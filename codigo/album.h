@@ -13,6 +13,7 @@ public:
     album();
     album(const std::string& nom, unsigned char priv);
     ~album();
+    album(const album& otra);
     album& operator=(const album& otra);
     bool operator==(const album& otra) const;
     std::string getNombre() const;
@@ -24,6 +25,7 @@ public:
     const lista<foto>& getColeccionFotos() const;
     void agregarFoto(const foto& f);
     friend std::ostream& operator<<(std::ostream& os, const album& a);
+    unsigned long memoriaAlbum() const;
 };
 
 #endif // ALBUM_H

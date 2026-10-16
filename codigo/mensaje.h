@@ -14,6 +14,7 @@ public:
     mensaje();
     mensaje(const std::string& txt, int emi,const fecha& f);
     ~mensaje();
+    mensaje(const mensaje& otra);
     mensaje& operator=(const mensaje& otra);
     bool operator==(const mensaje& otra) const;
     bool setTexto(const std::string& txt);
@@ -24,5 +25,6 @@ public:
     int getEmisor() const;
     fecha getFecha_envio() const;
     friend std::ostream& operator<<(std::ostream& os, const mensaje& m);
+    unsigned long memoriaMensaje() const;
 };
 #endif // MENSAJE_H

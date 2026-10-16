@@ -46,6 +46,7 @@ public:
     int mostrar_solicitudes(unsigned long int& iteraciones)const;
     void buscarMensajesPorFecha(const fecha& inicio, const fecha& fin, unsigned long& iteraciones);
     void buscarMensajesNoLeidos(unsigned long& iteraciones);
+    bool enviarMensaje(int indice_receptor, const std::string& texto, const fecha& f, unsigned long int& iteraciones);
     //cargar()
     bool cargarUsuarios_txt(const string& ruta,unsigned long int& iteraciones);
     bool cargarRelaciones_txt(const string& ruta, unsigned long int& iteraciones);
