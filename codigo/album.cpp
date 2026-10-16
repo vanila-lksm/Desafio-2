@@ -5,6 +5,19 @@ album::album(const std::string& nom, unsigned char priv) {
     if (!setNombre(nom)) nombre="SinNombre";
     if (!setPrivacidad(priv)) privacidad='P';
 }
+album& album::operator=(const album& otra) {
+    if (this != &otra) {
+        nombre = otra.nombre;
+        privacidad = otra.privacidad;
+        coleccion_fotos = otra.coleccion_fotos;
+    }
+    return *this;
+}
+bool album::operator==(const album& otra) const {
+    return nombre == otra.nombre &&
+           privacidad == otra.privacidad &&
+           coleccion_fotos == otra.coleccion_fotos;
+}
 album::~album() {}
 std::string album::getNombre() const {
     return nombre;
@@ -32,4 +45,9 @@ const lista<foto>& album::getColeccionFotos() const {
 }
 void album::agregarFoto(const foto& f) {
     coleccion_fotos.agregarAlFinal(f);
+}
+std::ostream& operator<<(std::ostream& os, const album& a) {
+    os << a.getNombre() << ';'
+       << static_cast<char>(a.getPrivacidad());
+    return os;
 }

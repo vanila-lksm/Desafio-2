@@ -10,20 +10,19 @@ private:
     bool leido;
     fecha fecha_envio;
     int emisor;
-    int receptor;
 public:
     mensaje();
-    mensaje(const std::string& txt, int emi, int rec, const fecha& f);
+    mensaje(const std::string& txt, int emi,const fecha& f);
     ~mensaje();
+    mensaje& operator=(const mensaje& otra);
+    bool operator==(const mensaje& otra) const;
     bool setTexto(const std::string& txt);
     bool setEmisor(int emi);
-    bool setReceptor(int rec);
     const std::string& getTexto() const;
     bool esLeido() const;
     void marcarLeido();
     int getEmisor() const;
-    int getReceptor() const;
     fecha getFecha() const;
+    friend std::ostream& operator<<(std::ostream& os, const mensaje& m);
 };
-
 #endif // MENSAJE_H
