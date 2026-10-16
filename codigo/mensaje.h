@@ -24,7 +24,9 @@ public:
     void setleido(bool estado = true);
     int getEmisor() const;
     fecha getFecha_envio() const;
+    void setFecha_envio(const fecha& f);
     friend std::ostream& operator<<(std::ostream& os, const mensaje& m);
     unsigned long memoriaMensaje() const;
+
 };
 #endif // MENSAJE_H

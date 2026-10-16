@@ -51,6 +51,9 @@ int mensaje::getEmisor() const {
     return emisor; }
 fecha mensaje::getFecha_envio() const {
     return fecha_envio; }
+void mensaje::setFecha_envio(const fecha& f) {
+    fecha_envio = f;
+}
 std::ostream& operator<<(std::ostream& os, const mensaje& m) {
     os << m.getEmisor() << ';'
        << m.getFecha_envio() << ';'
