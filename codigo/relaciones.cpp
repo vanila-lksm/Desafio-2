@@ -33,6 +33,8 @@ void relaciones::setAmistades(const unsigned long long int* nuevas, int n)
 }
 void relaciones::setMarca(int i, int j, bool valor)
 {
+    if(i>=cantidad_usuarios || j>=cantidad_usuarios)
+        return;
     unsigned int ubicacion=i*getEspaciosFila()+j/64;
     unsigned long long int mascara=1ULL<<(j%64);
     if(valor)
@@ -67,7 +69,7 @@ unsigned int relaciones::amigosEnComun(int i,int j, unsigned long int& iteracion
         while(combinado!=0)
         {
             iteraciones++;
-            unsigned int x=k * espacios + u_BitMasBajo(combinado);
+            unsigned int x=k * 64 + u_BitMasBajo(combinado);
             if(getMarca(x,i) && getMarca(x,j))
                 abyacencias++;
             combinado&=combinado-1;
@@ -87,6 +89,13 @@ unsigned char relaciones::u_BitMasBajo(unsigned long long int combinado)
     if ((combinado & 0x1ULL) == 0)        { posicion += 1; }
     return posicion;
 }
+unsigned long relaciones::memoriaRelaciones() const
+{
+    unsigned long total = sizeof(relaciones);
+    total += (unsigned long)cantidad_usuarios * getEspaciosFila() * sizeof(unsigned long long);
+    return total;
+}
+//operadores
 relaciones& relaciones::operator=(const relaciones& otra)
 {
     if(this != &otra)
@@ -96,7 +105,7 @@ relaciones& relaciones::operator=(const relaciones& otra)
     return *this;
 }
 
-bool relaciones:: operator==(const relaciones& otra)
+bool relaciones:: operator==(const relaciones& otra) const
 {
     if(cantidad_usuarios != otra.cantidad_usuarios)
         return false;
