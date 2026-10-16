@@ -256,6 +256,61 @@ bool udeaBook::enviar_solicitud(const string& nombre, unsigned long int& iteraci
     cout << "Solicitud enviada a " << nombre << endl;
     return true;
 }
+    void udeaBook::buscarMensajesPorFecha(const fecha& inicio, const fecha& fin, unsigned long int& iteraciones)
+    {
+        if (usuario_actual < 0 || usuario_actual >= usuarios.tamanio()) {
+            cout << "Error: No hay un usuario logueado." << endl;
+            return;
+        }
+        usuario& u = usuarios.en(usuario_actual, iteraciones);
+        lista<mensaje>& misMensajes = u.getRecibidos();
+        int n = misMensajes.tamanio();
+        int encontrados = 0;
+        cout << "--- mensajes entre " << inicio << " y " << fin << " ---" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            iteraciones++;
+            mensaje& m = misMensajes.en(i, iteraciones);
+            fecha f = m.getFecha_envio();
+            if (f >= inicio && f <= fin)
+            {
+                m.setleido();
+                cout << m << endl;
+                encontrados++;
+            }
+        }
+
+        if (encontrados == 0) {
+            cout << "No se encontraron mensajes en este rango de fechas." << endl;
+        }
+    }
+
+    void udeaBook::buscarMensajesNoLeidos(unsigned long int& iteraciones)
+    {
+        if (usuario_actual < 0 || usuario_actual >= usuarios.tamanio()) {
+            return;
+        }
+        usuario& u = usuarios.en(usuario_actual, iteraciones);
+        lista<mensaje>& misMensajes = u.getRecibidos();
+        int n = misMensajes.tamanio();
+        int encontrados = 0;
+        cout << "--- Mensajes No Leidos ---" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            iteraciones++;
+            mensaje& m = misMensajes.en(i, iteraciones);
+            if (!m.getleido())
+            {
+                m.setleido();
+                cout << m << endl;
+                encontrados++;
+            }
+        }
+
+        if (encontrados == 0) {
+            cout << "No tienes mensajes nuevos por leer." << endl;
+        }
+    }
 //cargar()
 bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iteraciones)
 {
@@ -354,12 +409,10 @@ bool udeaBook:: cargarMensajes_txt(const string& ruta, unsigned long int& iterac
         if (emisor < 0 || emisor >= usuarios.tamanio())
             return false;
 
-        mensaje m;
-        if (!m.setTexto(texto))
+        mensaje m(texto, emisor, envio);
+        if (m.getTexto() == "[mensaje invalido]")
             return false;
-        m.setEnvio(envio);
-        m.setEmisor(emisor);
-        m.setLeido(leido);
+        m.setleido(leido);
 
         usuarios.en(receptor, iteraciones).recibirMensaje(m);
     }

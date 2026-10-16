@@ -1,21 +1,22 @@
-TEMPLATE = app
-CONFIG += console c++17
-CONFIG -= app_bundle
-CONFIG -= qt
-
 SOURCES += \
     album.cpp \
-    main.cpp \
-    mensaje.cpp \
     fecha.cpp \
     foto.cpp \
-    relaciones.cpp
+    lista.cpp \
+    main.cpp \
+    mensaje.cpp \
+    nodo.cpp \
+    relaciones.cpp \
+    udeabook.cpp \
+    usuario.cpp
 
 HEADERS += \
     album.h \
+    fecha.h \
+    foto.h \
     lista.h \
     mensaje.h \
     nodo.h \
-    fecha.h \
-    foto.h \
-    relaciones.h
+    relaciones.h \
+    udeabook.h \
+    usuario.h

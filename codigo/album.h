@@ -17,6 +17,7 @@ public:
     bool operator==(const album& otra) const;
     std::string getNombre() const;
     unsigned char getPrivacidad() const;
+    bool visiblePara(bool esAmigo, bool esDueno) const;
     bool setNombre(const std::string& nom);
     bool setPrivacidad(unsigned char priv);
     lista<foto>& getColeccionFotos();

@@ -19,10 +19,10 @@ public:
     bool setTexto(const std::string& txt);
     bool setEmisor(int emi);
     const std::string& getTexto() const;
-    bool esLeido() const;
-    void marcarLeido();
+    bool getleido() const;
+    void setleido(bool estado = true);
     int getEmisor() const;
-    fecha getFecha() const;
+    fecha getFecha_envio() const;
     friend std::ostream& operator<<(std::ostream& os, const mensaje& m);
 };
 #endif // MENSAJE_H

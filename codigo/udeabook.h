@@ -44,6 +44,8 @@ public:
     unsigned long memoriaUdeaBook() const;
     bool enviar_solicitud(const string& nombre, unsigned long int& iteraciones);
     int mostrar_solicitudes(unsigned long int& iteraciones)const;
+    void buscarMensajesPorFecha(const fecha& inicio, const fecha& fin, unsigned long& iteraciones);
+    void buscarMensajesNoLeidos(unsigned long& iteraciones);
     //cargar()
     bool cargarUsuarios_txt(const string& ruta,unsigned long int& iteraciones);
     bool cargarRelaciones_txt(const string& ruta, unsigned long int& iteraciones);

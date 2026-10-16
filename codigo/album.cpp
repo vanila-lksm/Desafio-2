@@ -51,3 +51,9 @@ std::ostream& operator<<(std::ostream& os, const album& a) {
        << static_cast<char>(a.getPrivacidad());
     return os;
 }
+bool album::visiblePara(bool esAmigo, bool esDueno) const {
+    if (esDueno) return true;       // el dueño ve todos los suyos
+    if (privacidad == 'P') return true; // publico: cualquiera
+    if (privacidad == 'A') return esAmigo; // amigos: solo si lo es
+    return false;                   // 'R' privado: solo el dueño
+}

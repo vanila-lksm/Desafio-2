@@ -39,19 +39,20 @@ bool mensaje::setEmisor(int emi)
     return true;
 }
 const std::string& mensaje::getTexto() const { return texto; }
-bool mensaje::esLeido() const {
-    return leido; }
-void mensaje::marcarLeido() {
-    leido = true; }
+bool mensaje::getleido() const {
+    return leido;
+}
+void mensaje::setleido(bool estado) {
+    leido = estado;
+}
 int mensaje::getEmisor() const {
     return emisor; }
-fecha mensaje::getFecha() const {
+fecha mensaje::getFecha_envio() const {
     return fecha_envio; }
-std::ostream& operator<<(std::ostream& os, const mensaje& m)
-{
+std::ostream& operator<<(std::ostream& os, const mensaje& m) {
     os << m.getEmisor() << ';'
-       << m.getFecha() << ';'
-       << (m.esLeido() ? 1 : 0) << ';'
+       << m.getFecha_envio() << ';'
+       << (m.getleido() ? 1 : 0) << ';' // Aquí garantizamos el 1 o 0
        << m.getTexto();
     return os;
 }
