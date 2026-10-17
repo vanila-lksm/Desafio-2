@@ -14,11 +14,11 @@ private:
 
 public:
     foto();
-    foto(const string& _n, const fecha _p, unsigned int _l, unsigned short int _t);
+    foto(const string& _n, const fecha _p, unsigned int _l=0, unsigned short int _t=534);
     foto(const foto& otra);
     ~foto();
     //set()
-    bool setNombre(string& _n);
+    bool setNombre(const string& _n);
     bool setPublicada(fecha _p);
     bool setTamanio(unsigned int _t);
     bool setLikes(unsigned int _l);
@@ -31,13 +31,14 @@ public:
     bool darLike();
     bool quitarLike();
     unsigned long int memoriaFoto();
-    string rutaFoto(string& rutaAlbum);
+    string rutaFoto(const string& rutaAlbum);
     //operadores
     foto& operator=(const foto& otra);
     bool operator==(const foto& otra) const;
+    friend ostream& operator<<(ostream& os, const foto& f);
 
 };
 
-ostream& operator<<(ostream& os, const foto& f);
+
 
 #endif // FOTO_H

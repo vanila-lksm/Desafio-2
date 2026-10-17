@@ -166,11 +166,11 @@ bool fecha::operator>=(const fecha otra) const
 
 ostream& operator<<(ostream& os,const fecha f)
 {
-    os << f.anio << '-';
-    if (f.mes < 10) os << '0';
-    os << static_cast<int>(f.mes) << '-';
-    if (f.dia < 10) os << '0';
-    os << static_cast<int>(f.dia);
+    os << f.getAnio() << '-';
+    if (f.getMes() < 10) os << '0';
+    os << static_cast<int>(f.getMes()) << '-';
+    if (f.getDia() < 10) os << '0';
+    os << static_cast<int>(f.getDia());
     return os;
 }
 

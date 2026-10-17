@@ -1,10 +1,10 @@
 #include "foto.h"
 
-foto::foto() {}
+foto::foto():tamanio(0), likes(0) {}
 foto:: foto(const string& _nombre,const fecha _publicada,
-           unsigned int _likes=0,unsigned short int _tamanio=500): nombre("pachanga"), publicada(fecha()),tamanio(500),likes(0)
+           unsigned int _likes,unsigned short int _tamanio): nombre("pachanga"), publicada(fecha()),tamanio(500),likes(0)
 {
-    if(_tamanio>65353 || _likes>4000000)
+    if(_tamanio>65534 || _likes>4294967293)
         return;
     nombre=_nombre;
     publicada=_publicada;
@@ -18,8 +18,9 @@ foto:: foto(const foto& otra)
     tamanio=otra.tamanio;
     likes=otra.likes;
 }
+foto::~foto(){}
 //set()
-bool foto:: setNombre(string& _nombre)
+bool foto:: setNombre(const string& _nombre)
 {
     nombre=_nombre;
     return true;
@@ -38,7 +39,7 @@ bool foto:: setTamanio(unsigned int _tamanio)
 }
 bool foto:: setLikes(unsigned int _likes)
 {
-    if(_likes>4000000)
+    if(_likes>4294967293)
         return false;
     likes=_likes;
     return true;
@@ -74,7 +75,7 @@ unsigned long int foto:: memoriaFoto()
     }
     return total;
 }
-string foto::rutaFoto(string& rutaAlbum)
+string foto::rutaFoto(const string& rutaAlbum)
 {
     return rutaAlbum + "/" + nombre +".png";
 }
@@ -99,7 +100,8 @@ bool foto:: operator==(const foto& otra) const
 
 ostream& operator<<(ostream& os, const foto& f)
 {
-    os << f.nombre << ';' << f.publicada << ';' << f.tamanio << ';' << f.likes;
+    os << f.getNombre() << ';' << f.getPublicada() << ';'
+       << f.getTamanio() << ';' << f.getLikes();
     return os;
 }
 
