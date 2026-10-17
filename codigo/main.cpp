@@ -19,12 +19,8 @@ int main()
     }
     plataforma.reportarEficiencia(iteraciones);
     short int decision=0;
-    int amigos_ind[6],amigos_cantidad=0,amigos_desde=0; const usuario* amigos[6];
-    amigos_cantidad=plataforma.calcAmigos(amigos_ind,iteraciones);
-    //los amigos a imprimir
-    cout<<endl<<"---eliguiendo amigos a imprimir---";
-    plataforma.buscarPorIndices(amigos_ind,amigos_cantidad,amigos,iteraciones);
-    plataforma.reportarEficiencia(iteraciones); cout << "+ ejecucion de libreria random" << endl;
+    int amigos_cantidad=0,amigos_desde=0; const usuario* amigos[6];
+    plataforma.elegir_ami_imp(iteraciones,amigos_cantidad,amigos);
     while(decision!=9)
     {
         cout<<endl<<"---udeaBook---"<<endl;

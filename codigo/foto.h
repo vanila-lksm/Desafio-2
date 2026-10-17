@@ -30,8 +30,8 @@ public:
     //funciones
     bool darLike();
     bool quitarLike();
-    unsigned long int memoriaFoto();
-    string rutaFoto(const string& rutaAlbum);
+    unsigned long int memoriaFoto() const;
+    string rutaFoto(const string& rutaAlbum) const;
     //operadores
     foto& operator=(const foto& otra);
     bool operator==(const foto& otra) const;
