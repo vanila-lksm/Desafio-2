@@ -4,31 +4,24 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-<<<<<<< HEAD
     album.cpp \
-    main.cpp \
-    mensaje.cpp \
     fecha.cpp \
     foto.cpp \
-    relaciones.cpp
-=======
-        album.cpp \
-        lista.cpp \
-        main.cpp \
-        mensaje.cpp \
-        fecha.cpp \
-        foto.cpp \
-        nodo.cpp
->>>>>>> origin/david
+    lista.cpp \
+    main.cpp \
+    mensaje.cpp \
+    nodo.cpp \
+    relaciones.cpp \
+    udeabook.cpp \
+    usuario.cpp
 
 HEADERS += \
     album.h \
-    lista.h \
-    mensaje.h \
-<<<<<<< HEAD
-    nodo.h \
-=======
->>>>>>> origin/david
     fecha.h \
     foto.h \
-    relaciones.h
+    lista.h \
+    mensaje.h \
+    nodo.h \
+    relaciones.h \
+    udeabook.h \
+    usuario.h
