@@ -1,49 +1,70 @@
 #include "mensaje.h"
 
 mensaje::mensaje()
-    : texto(""), leido(false), fecha_envio(), emisor(-1), receptor(-1) {}
+    : texto(""), leido(false), fecha_envio(), emisor(-1) {}
 
-mensaje::mensaje(const std::string& txt, int emi, int rec, const fecha& f)
-    : texto(""), leido(false), fecha_envio(f), emisor(-1), receptor(-1)
+mensaje::mensaje(const std::string& txt, int emi, const fecha& f)
+    : texto(""), leido(false), fecha_envio(f), emisor(-1)
 {
     if (!setTexto(txt))
         texto = "[mensaje invalido]";
     setEmisor(emi);
-    setReceptor(rec);
 }
-
 mensaje::~mensaje() {}
-
+mensaje& mensaje::operator=(const mensaje& otra) {
+    if (this != &otra) {
+        texto = otra.texto;
+        leido = otra.leido;
+        fecha_envio = otra.fecha_envio;
+        emisor = otra.emisor;
+    }
+    return *this;
+}
+mensaje::mensaje(const mensaje& otra)
+    : texto(otra.texto), leido(otra.leido), fecha_envio(otra.fecha_envio), emisor(otra.emisor) {}
+bool mensaje::operator==(const mensaje& otra) const {
+    return texto == otra.texto &&
+           emisor == otra.emisor &&
+           fecha_envio == otra.fecha_envio;
+}
 bool mensaje::setTexto(const std::string& txt)
 {
-    if (txt.empty() || txt.size() > 512) return false;
+    if (txt.empty() || txt.size()>512) return false;
     if (txt.find(';') != std::string::npos) return false;
     texto = txt;
     return true;
 }
-
 bool mensaje::setEmisor(int emi)
 {
-    if (emi < 0) return false;
-    emisor = emi;
+    if (emi<0) return false;
+    emisor=emi;
     return true;
 }
-
-bool mensaje::setReceptor(int rec)
-{
-    if (rec < 0) return false;
-    receptor = rec;
-    return true;
-}
-
 const std::string& mensaje::getTexto() const { return texto; }
-bool mensaje::esLeido() const {
-    return leido; }
-void mensaje::marcarLeido() {
-    leido = true; }
+bool mensaje::getleido() const {
+    return leido;
+}
+void mensaje::setleido(bool estado) {
+    leido = estado;
+}
 int mensaje::getEmisor() const {
     return emisor; }
-int mensaje::getReceptor() const {
-    return receptor; }
-fecha mensaje::getFecha() const {
+fecha mensaje::getFecha_envio() const {
     return fecha_envio; }
+void mensaje::setFecha_envio(const fecha& f) {
+    fecha_envio = f;
+}
+std::ostream& operator<<(std::ostream& os, const mensaje& m) {
+    os << m.getEmisor() << ';'
+       << m.getFecha_envio() << ';'
+       << (m.getleido() ? 1 : 0) << ';' // Aquí garantizamos el 1 o 0
+       << m.getTexto();
+    return os;
+}
+unsigned long mensaje::memoriaMensaje() const {
+    unsigned long total = sizeof(mensaje);
+    if (texto.capacity() > 15) {
+        total += texto.capacity() + 1;
+    }
+    return total;
+}

@@ -9,6 +9,5 @@ public:
     Nodo<T>* ant;
     Nodo(const T& d);
 };
-
 #include "nodo.cpp"
 #endif // NODO_H

@@ -5,17 +5,17 @@ CONFIG -= qt
 
 SOURCES += \
         album.cpp \
-        codigo/lista.cpp \
-        codigo/main.cpp \
-        codigo/mensaje.cpp \
-        codigo/fecha.cpp \
+        lista.cpp \
+        main.cpp \
+        mensaje.cpp \
+        fecha.cpp \
         foto.cpp \
         nodo.cpp
 
 HEADERS += \
     album.h \
-    codigo/lista.h \
-    codigo/mensaje.h \
-    codigo/fecha.h \
+    lista.h \
+    mensaje.h \
+    fecha.h \
     foto.h \
     nodo.h
