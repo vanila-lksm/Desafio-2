@@ -1,6 +1,7 @@
 #ifndef LISTA_H
 #define LISTA_H
 #include "nodo.h"
+#include <stdexcept>
 
 template <typename T>
 class lista {
@@ -40,6 +41,7 @@ public:
     T* ultimo() { return (cola != 0) ? &cola->dato : 0; }
     const T* ultimo() const { return (cola != 0) ? &cola->dato : 0; }
     unsigned long memoria() const;
+    int buscar(const T& dato, unsigned long& iteraciones) const;
 };
 #include "lista.cpp"
 #endif // LISTA_H

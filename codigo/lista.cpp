@@ -224,5 +224,21 @@ void lista<T>::vaciar() {
     cursor=0;
     indiceCursor=0;
 }
+template <typename T>
+int lista<T>::buscar(const T& dato, unsigned long& iteraciones) const {
+    Nodo<T>* actual = cabeza;
+    int pos = 0;
+    while (actual != 0) {
+        iteraciones++;
+        if (actual->dato == dato) {
+            cursor = actual;
+            indiceCursor = pos;
+            return pos;
+        }
+        actual = actual->sig;
+        pos++;
+    }
+    return -1; // No encontrado
+}
 
 #endif // LISTA_CPP

@@ -1,6 +1,6 @@
 #include "album.h"
 #include <string>
-album::album() : nombre(""), privacidad('P') {}
+album::album() : nombre("SinNombre"), privacidad('P') {}
 album::album(const std::string& nom, unsigned char priv) {
     if (!setNombre(nom)) nombre="SinNombre";
     if (!setPrivacidad(priv)) privacidad='P';
@@ -22,6 +22,8 @@ album::~album() {}
 std::string album::getNombre() const {
     return nombre;
 }
+album::album(const album& otra)
+    : nombre(otra.nombre), privacidad(otra.privacidad), coleccion_fotos(otra.coleccion_fotos) {}
 unsigned char album::getPrivacidad() const {
     return privacidad;
 }
@@ -50,4 +52,17 @@ std::ostream& operator<<(std::ostream& os, const album& a) {
     os << a.getNombre() << ';'
        << static_cast<char>(a.getPrivacidad());
     return os;
+}
+bool album::visiblePara(bool esAmigo, bool esDueno) const {
+    if (esDueno) return true;       // el dueño ve todos los suyos
+    if (privacidad == 'P') return true; // publico: cualquiera
+    if (privacidad == 'A') return esAmigo; // amigos: solo si lo es
+    return false;                   // 'R' privado: solo el dueño   
+}
+unsigned long album::memoriaAlbum() const {
+    unsigned long total = sizeof(album);
+    if (nombre.capacity() > 15) {
+        total += nombre.capacity() + 1;
+    }
+    return total;
 }
