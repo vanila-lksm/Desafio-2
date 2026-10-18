@@ -503,7 +503,7 @@ bool udeaBook:: cargarUsuarios_txt(const string& ruta, unsigned long int& iterac
     }
     return true;
 }
-int udeaBook::recomendaciones_amistades(int k,int* indices,unsigned long int& iteraciones)
+int udeaBook::recomendaciones_amistades(int k,int* indices,int* comunes,unsigned long int& iteraciones)
 {
     if (indices == 0 || usuario_actual < 0)
         return 0;
@@ -512,7 +512,6 @@ int udeaBook::recomendaciones_amistades(int k,int* indices,unsigned long int& it
         cout << "la cantidad debe estar entre 1 y 20" << endl;
         return 0;
     }
-    int comunes[20];
     int c_u = amistades.getCantidad_usuarios();
     int cuantos = 0;
     for (int j = 0; j < c_u; j++)
@@ -836,7 +835,7 @@ void udeaBook::reportarEficiencia(unsigned long int& iteraciones)
     cout<<endl;
     cout<<"---reporte---"<<endl;
     cout << "iteraciones: " << iteraciones << endl;
-    cout << "memoria: " << memoriaUdeaBook() << " bytes" << endl;
+    cout << "memoria: " << (memoriaUdeaBook()+82) << " bytes" << endl;
     iteraciones=0;
 }
 bool udeaBook::recargarAmigos(int& desde, int cantidad) const
@@ -986,9 +985,10 @@ void udeaBook::decision4(unsigned long int& iteraciones,short int decision)
 void udeaBook::decision5(unsigned long int& iteraciones)
 {
     int indices[20];
+    int com[20];
     const usuario* sug[20];
     int k=leerEntero("cuantas sugerencias quiere ver? (1 a 20): ");
-    int cuantas=recomendaciones_amistades(k,indices,iteraciones);
+    int cuantas=recomendaciones_amistades(k,indices,com,iteraciones);
     if(cuantas==0)
         {cout<<"no hay usuarios que podamos recomendarte"<<endl;}
     else
@@ -998,7 +998,17 @@ void udeaBook::decision5(unsigned long int& iteraciones)
         {
             iteraciones++;
             if(sug[i]!=0)
-                {cout<<"*** "<<sug[i]->getNombre()<<" ***"<<endl;}
+                {cout<<"*** "<<sug[i]->getNombre()<<" en comun: "<<com[i]<<endl;}
         }
     }
+    reportarEficiencia(iteraciones);
+}
+void udeaBook::elegir_ami_imp(unsigned long int& iteraciones,int& amigos_cantidad,const usuario** amigos)
+{
+    int amigos_ind[6];
+    amigos_cantidad=calcAmigos(amigos_ind,iteraciones);
+    //los amigos a imprimir
+    cout<<endl<<"---eliguiendo amigos a imprimir---";
+    buscarPorIndices(amigos_ind,amigos_cantidad,amigos,iteraciones);
+    reportarEficiencia(iteraciones); cout << "+ ejecucion de libreria random" << endl;
 }

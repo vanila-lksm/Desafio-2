@@ -48,7 +48,7 @@ public:
     void buscarMensajesPorFecha(const fecha& inicio, const fecha& fin, unsigned long& iteraciones);
     void buscarMensajesNoLeidos(unsigned long& iteraciones);
     bool enviarMensaje(int indice_receptor, const std::string& texto, unsigned long int& iteraciones);
-    int recomendaciones_amistades(int k,int* indices,unsigned long int& iteraciones);
+    int recomendaciones_amistades(int k,int* indices,int* comunes,unsigned long int& iteraciones);
     //cargar()
     bool cargarUsuarios_txt(const string& ruta,unsigned long int& iteraciones);
     bool cargarRelaciones_txt(const string& ruta, unsigned long int& iteraciones);
@@ -71,6 +71,7 @@ public:
     void decision2(unsigned long int& iteraciones,short int decision);
     void decision4(unsigned long int& iteraciones,short int decision);
     void decision5(unsigned long int& iteraciones);
+    void elegir_ami_imp(unsigned long int& iteraciones,int& amisgos_cantidad,const usuario** amigos);
 };
 
 #endif // UDEABOOK_H

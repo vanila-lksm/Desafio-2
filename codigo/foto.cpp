@@ -66,7 +66,7 @@ bool foto::quitarLike()
     likes--;
     return true;
 }
-unsigned long int foto:: memoriaFoto()
+unsigned long int foto:: memoriaFoto()const
 {
     unsigned long int total=sizeof(foto);
     if(nombre.capacity()>15)
@@ -75,7 +75,7 @@ unsigned long int foto:: memoriaFoto()
     }
     return total;
 }
-string foto::rutaFoto(const string& rutaAlbum)
+string foto::rutaFoto(const string& rutaAlbum)const
 {
     return rutaAlbum + "/" + nombre +".png";
 }
